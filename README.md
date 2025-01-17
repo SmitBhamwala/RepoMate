@@ -37,18 +37,34 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 
 ## Init Tailwind
+```bash
 npx tailwindcss init
+```
 
 ## Init shadcn-ui
-npx shadcn@latest init //new york slate colors(yes)
+```bash
+npx shadcn@latest init
+```
+
+new york slate colors: yes
 
 ## Generate prisma schema for db 
 Note: Always run this command when you make changes in schema.prisma file.
 
+```bash
 npx prisma generate
+```
 
 ## Sync schema with db
+```bash
 npx prisma db push
+```
 
-## To start prisma db server on port 5555 (Good for managing data from db)
+## To start prisma db server
+```bash
 npx prisma studio
+```
+
+Port: 5555
+
+Note: Prisma DB server is good for managing data from db
