@@ -43,7 +43,8 @@ npx tailwindcss init
 npx shadcn@latest init //new york slate colors(yes)
 
 ## Generate prisma schema for db 
-Note: Always run this command when you make changes in schema.prisma file
+Note: Always run this command when you make changes in schema.prisma file.
+
 npx prisma generate
 
 ## Sync schema with db
