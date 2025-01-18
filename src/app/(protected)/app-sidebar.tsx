@@ -67,7 +67,13 @@ export default function AppSidebar() {
 		<Sidebar collapsible="icon" variant="floating">
 			<SidebarHeader>
 				<div className="flex items-center gap-2">
-					<Image src="/ai-hub.svg" alt="logo" width={40} height={40} />
+					<Image
+						src="/ai-hub.svg"
+						alt="logo"
+						width={40}
+						height={40}
+						quality={100}
+					/>
 					{open && (
 						<h1 className="text-xl font-bold text-primary/80">GitHub AI</h1>
 					)}
