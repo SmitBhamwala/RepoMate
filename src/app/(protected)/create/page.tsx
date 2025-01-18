@@ -2,8 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 type FormInput = {
 	repoURL: string;
@@ -12,12 +15,44 @@ type FormInput = {
 };
 
 export default function CreatePage() {
+	const { data: session } = useSession();
+	const [isPending, startTranition] = useTransition();
+
 	const { register, handleSubmit, reset } = useForm<FormInput>();
 
-	function onSubmit(data: FormInput) {
-		window.alert(JSON.stringify(data, null, 2));
+	async function delay(ms: number) {
+		return new Promise((resolve) => setTimeout(resolve, ms));
+	}
+
+	async function onSubmit(data: FormInput) {
+		toast.loading("Creating project...");
+		startTranition(async () => {
+			const response = await fetch("http://localhost:3000/api/createProject", {
+				method: "POST",
+				body: JSON.stringify({
+					data: {
+						gitHubURL: data.repoURL,
+						name: data.projectName,
+						userId: session?.user.id
+					}
+				}),
+				headers: {
+					"Content-Type": "application/json"
+				}
+			});
+			const message = await response.json();
+			toast.dismiss();
+
+			if (message.error) {
+				toast.error(message.error, { duration: 2000 });
+			} else {
+				toast.success(message.message, { duration: 2000 });
+				reset();
+			}
+		});
 		return true;
 	}
+
 	return (
 		<div className="flex items-center justify-center gap-12 h-full">
 			<Image
@@ -58,7 +93,9 @@ export default function CreatePage() {
 							placeholder="GitHub Token (Optional)"
 						/>
 						<div className="h-4"></div>
-						<Button type="submit">Create Project</Button>
+						<Button disabled={isPending} type="submit">
+							Create Project
+						</Button>
 					</form>
 				</div>
 			</div>

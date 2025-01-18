@@ -1,27 +1,23 @@
-import { auth, signOut } from "@/auth";
+"use client";
+
 import { Button } from "@/components/ui/button";
+import { signOut, useSession } from "next-auth/react";
 
-export default async function SettingsPage() {
-  const session = await auth();
+export default function SettingsPage() {
+	const { data: session } = useSession();
 
-  return (
-    <div>
-      <div className="m-4">
-        <p>ID: {session?.user.id}</p>
-        <p>Name: {session?.user.name}</p>
-        <p>Email: {session?.user.email}</p>
-        <p>Image: {session?.user.image}</p>
-        <p>Role: {session?.user.role}</p>
-
-      </div>
-      <form
-        action={async () => {
-          "use server";
-          await signOut({ redirectTo: "/" });
-        }}
-      >
-        <Button type="submit">Logout</Button>
-      </form>
-    </div>
-  );
+	return (
+		<div>
+			<div className="m-4">
+				<p>ID: {session?.user.id}</p>
+				<p>Name: {session?.user.name}</p>
+				<p>Email: {session?.user.email}</p>
+				<p>Image: {session?.user.image}</p>
+				<p>Role: {session?.user.role}</p>
+			</div>
+			<Button type="submit" onClick={() => signOut()}>
+				Logout
+			</Button>
+		</div>
+	);
 }
