@@ -6,7 +6,6 @@ export default async function SettingsPage() {
 
   return (
     <div>
-      {/* {JSON.stringify(session)} */}
       <div className="m-4">
         <p>ID: {session?.user.id}</p>
         <p>Name: {session?.user.name}</p>
