@@ -2,9 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useSession } from "next-auth/react";
+import useRefetch from "@/hooks/use-refetch";
+import { api } from "@/trpc/react";
 import Image from "next/image";
-import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -15,41 +15,31 @@ type FormInput = {
 };
 
 export default function CreatePage() {
-	const { data: session } = useSession();
-	const [isPending, startTranition] = useTransition();
-
 	const { register, handleSubmit, reset } = useForm<FormInput>();
+	const createProject = api.project.createProject.useMutation();
+	const refetch = useRefetch();
 
-	async function delay(ms: number) {
-		return new Promise((resolve) => setTimeout(resolve, ms));
-	}
-
-	async function onSubmit(data: FormInput) {
-		toast.loading("Creating project...");
-		startTranition(async () => {
-			const response = await fetch("http://localhost:3000/api/createProject", {
-				method: "POST",
-				body: JSON.stringify({
-					data: {
-						gitHubURL: data.repoURL,
-						name: data.projectName,
-						userId: session?.user.id
-					}
-				}),
-				headers: {
-					"Content-Type": "application/json"
+	function onSubmit(data: FormInput) {
+		toast.loading("Creating project");
+		createProject.mutate(
+			{
+				name: data.projectName,
+				gitHubURL: data.repoURL,
+				gitHubToken: data.githubToken
+			},
+			{
+				onSuccess: () => {
+					toast.dismiss();
+					toast.success("Project created successfully", { duration: 2000 });
+					refetch();
+					reset();
+				},
+				onError: () => {
+					toast.dismiss();
+					toast.error("Error creating project", { duration: 2000 });
 				}
-			});
-			const message = await response.json();
-			toast.dismiss();
-
-			if (message.error) {
-				toast.error(message.error, { duration: 2000 });
-			} else {
-				toast.success(message.message, { duration: 2000 });
-				reset();
 			}
-		});
+		);
 		return true;
 	}
 
@@ -93,7 +83,7 @@ export default function CreatePage() {
 							placeholder="GitHub Token (Optional)"
 						/>
 						<div className="h-4"></div>
-						<Button disabled={isPending} type="submit">
+						<Button type="submit" disabled={createProject.isPending}>
 							Create Project
 						</Button>
 					</form>

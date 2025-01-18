@@ -52,7 +52,8 @@ const items = [
 export default function AppSidebar() {
 	const pathname = usePathname();
 	const { open } = useSidebar();
-	const { projects } = useProject();
+	const { projects, activeProjectId, setActiveProjectId } = useProject();
+
 	return (
 		<Sidebar collapsible="icon" variant="floating">
 			<SidebarHeader>
@@ -98,16 +99,17 @@ export default function AppSidebar() {
 					<SidebarGroupLabel>Your Projects</SidebarGroupLabel>
 					<SidebarGroupContent>
 						<SidebarMenu>
-							{projects.map((project: { name: string; gitHubURL: string }) => {
+							{projects?.map((project) => {
 								return (
-									<SidebarMenuItem key={project.name}>
+									<SidebarMenuItem key={project.id}>
 										<SidebarMenuButton asChild>
-											<div>
+											<div onClick={() => setActiveProjectId(project.id)}>
 												<div
 													className={cn(
 														"rounded-sm border size-6 flex items-center justify-center text-sm bg-white text-primary",
 														{
-															"bg-primary text-white": true
+															"bg-primary text-white":
+																project.id === activeProjectId
 														}
 													)}>
 													{project.name[0]}
