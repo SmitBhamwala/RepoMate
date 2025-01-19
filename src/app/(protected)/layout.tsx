@@ -1,20 +1,29 @@
+"use client";
+
 import { SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "./app-sidebar";
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider, signOut, useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 
 export default function SidebarLayout({
 	children
 }: {
 	children: React.ReactNode;
 }) {
+	const { data: session } = useSession();
+
 	return (
 		<SessionProvider>
 			<SidebarProvider>
 				<AppSidebar />
 				<main className="w-full m-2">
-					<div className="flex items-center gap-2 border-sidebar-border bg-sidebar border shadow rounded-md p-2 px-4">
+					<div className="flex items-center justify-end gap-2 border-sidebar-border bg-sidebar border shadow rounded-md p-2 px-4">
 						{/* <SearchBar /> */}
-						<div className="ml-auto"></div>
+						<p>{session?.user.name}</p>
+						<Button type="submit" onClick={() => signOut()}>
+							Logout
+						</Button>
+						{/* <div className="ml-auto"></div> */}
 						{/* <UserButton /> */}
 					</div>
 					<div className="h-4"></div>
