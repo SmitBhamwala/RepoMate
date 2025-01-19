@@ -1,5 +1,4 @@
 import { CardWrapper } from "@/components/auth/card-wrapper";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { FormError } from "@/components/form-error";
 
 export default function ErrorCard() {
