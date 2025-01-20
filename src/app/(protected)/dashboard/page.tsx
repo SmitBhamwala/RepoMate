@@ -3,8 +3,9 @@
 import useProject from "@/hooks/use-project";
 import { ExternalLink, Github } from "lucide-react";
 import Link from "next/link";
+import CommitLog from "./commit-log";
 
-export default function SettingsPage() {
+export default function DashboardPage() {
 	const { project } = useProject();
 
 	return (
@@ -41,7 +42,7 @@ export default function SettingsPage() {
 				</div>
 			</div>
 			<div className="mt-8"></div>
-			CommitLog
+			<CommitLog />
 		</div>
 	);
 }

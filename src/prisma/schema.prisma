@@ -73,6 +73,8 @@ model Project {
 
   userToProjects UserToProject[]
 
+  commits Commits[]
+
   @@map("projects")
 }
 
@@ -89,4 +91,26 @@ model UserToProject {
   project Project @relation(fields: [projectId], references: [id])
 
   @@unique([userId, projectId])
+  @@map("userToProject")
+}
+
+model Commits {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  commitMessage      String
+  commitHash         String
+  commitAuthorName   String
+  commitAuthorAvatar String
+  commitDate         DateTime
+
+  //ai summary
+  summary String
+
+  projectId String  @db.ObjectId
+  project   Project @relation(fields: [projectId], references: [id])
+
+  @@map("commits")
 }
