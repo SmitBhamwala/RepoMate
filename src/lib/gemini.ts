@@ -1,10 +1,18 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { Document } from "@langchain/core/documents";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const commitGenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY_1!);
+const commitSummaryModel = commitGenAI.getGenerativeModel({
+	model: "gemini-1.5-flash"
+});
+
+const codeSummaryGenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY_2!);
+const codeSummaryModel = codeSummaryGenAI.getGenerativeModel({
+	model: "gemini-1.5-flash"
+});
 
 export async function aiCommitSummarizer(diff: string) {
-	const prompt = `You are an expert programmer, and you are trying to summarize a git diff.
+	const commitSummaryPrompt = `You are an expert programmer, and you are trying to summarize a git diff.
 
 Reminders about the git diff format:
 For every file, there are a few metadata lines, for example:
@@ -40,7 +48,7 @@ It is given only as an example of appropriate comments.
 In your summary, don't include \'\'\' which is given at the start and end of the example.
 Always start all summary points with a \'⁕\'.
 
-Always ignore the changes in the lock files like package-lock.json or yarn.lock, etc.
+Always ignore the changes in the lock files like package-lock.json or yarn.lock or pnpm-lock.yaml or bun.lockb, etc.
 Do not include those changes in your summary.
 If there are no changes in the diff except the changes in the lock files, then, just say the name of the lock file and tell that it was updated or changed or deleted. No more summary in that. Don't mention its added or changed or updated or deleted contents. 
 
@@ -53,7 +61,43 @@ Each summary point should be short and precise.
 
 Please summarize the following diff file: \n\n${diff}`;
 
-	const result = await model.generateContent(prompt);
+	const result = await commitSummaryModel.generateContent(commitSummaryPrompt);
 
 	return result.response.text();
+}
+
+export async function summarizeCode(doc: Document) {
+	try {
+		const code = doc.pageContent.slice(0, 10000);
+		const commitSummaryPrompt = [
+			`You are an intelligent senior software engineer who specializes in onboarding junior software engineers onto projects.`,
+			`You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file.
+      Here is the code:
+      ---
+      ${code}
+      ---
+  
+      Give a summary of the code above in no more than 100 words.
+      `
+		];
+
+		const response = await codeSummaryModel.generateContent(
+			commitSummaryPrompt
+		);
+
+		return response.response.text();
+	} catch (error) {
+		console.error(error);
+		return "";
+	}
+}
+
+export async function generateAiTextToVectorEmbedding(summary: string) {
+const vecterEmbeddingGenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY_3!);
+	const model = vecterEmbeddingGenAI.getGenerativeModel({
+		model: "text-embedding-004"
+	});
+	const result = await model.embedContent(summary);
+	const embedding = result.embedding;
+	return embedding.values;
 }

@@ -73,7 +73,8 @@ model Project {
 
   userToProjects UserToProject[]
 
-  commits Commits[]
+  commits              Commits[]
+  SourceCodeEmbeddings SourceCodeEmbeddings[]
 
   @@map("projects")
 }
@@ -92,6 +93,21 @@ model UserToProject {
 
   @@unique([userId, projectId])
   @@map("userToProject")
+}
+
+model SourceCodeEmbeddings {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  summaryEmbedding Float[]
+
+  sourceCode String
+  fileName   String
+  summary    String
+
+  projectId String  @db.ObjectId
+  project   Project @relation(fields: [projectId], references: [id])
+
+  @@map("sourceCodeEmbeddings")
 }
 
 model Commits {
