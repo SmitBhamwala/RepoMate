@@ -39,10 +39,17 @@ Do not include parts of the example in your summary.
 It is given only as an example of appropriate comments.
 In your summary, don't include \'\'\' which is given at the start and end of the example.
 Always start all summary points with a \'⁕\'.
-Always ignore the changes in the lock files like package-lock.json or yarn.lock, etc. 
+
+Always ignore the changes in the lock files like package-lock.json or yarn.lock, etc.
 Do not include those changes in your summary.
+If there are no changes in the diff except the changes in the lock files, then, just say the name of the lock file and tell that it was updated or changed or deleted. No more summary in that. Don't mention its added or changed or updated or deleted contents. 
 
 Do not use \`(backquote) in your summary. Instead, use \'(single quote).
+
+If there are many changes in a single file, do not include all changes. Instead, highlight few main changes.
+
+Total summary points should not exceed 10.
+Each summary point should be short and precise.
 
 Please summarize the following diff file: \n\n${diff}`;
 

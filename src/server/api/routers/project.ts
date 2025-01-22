@@ -45,7 +45,7 @@ export const projectRouter = createTRPCRouter({
 			})
 		)
 		.query(async ({ ctx, input }) => {
-			pollCommits(input.projectId).then().catch(console.error);
+			// pollCommits(input.projectId).then().catch(console.error);
 			return await ctx.db.commits.findMany({
 				where: {
 					projectId: input.projectId
