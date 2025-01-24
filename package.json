@@ -12,6 +12,7 @@
     "schema": "src/prisma/schema.prisma"
   },
   "dependencies": {
+    "@ai-sdk/google": "^1.1.1",
     "@auth/prisma-adapter": "^2.7.4",
     "@google/generative-ai": "^0.21.0",
     "@hookform/resolvers": "^3.10.0",
@@ -50,6 +51,7 @@
     "@trpc/client": "^11.0.0-rc.700",
     "@trpc/react-query": "^11.0.0-rc.700",
     "@trpc/server": "^11.0.0-rc.700",
+    "ai": "^4.1.1",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

@@ -60,7 +60,7 @@ export default function AppSidebar() {
 				<div className="flex items-center gap-2">
 					<Image
 						src="/ai-hub.svg"
-						alt="logo"
+						alt="App Logo"
 						width={40}
 						height={40}
 						quality={100}
