@@ -28,62 +28,67 @@ export async function askQuestion(question: string, projectId: string) {
 		pipeline: [
 			{
 				$addFields: {
-					similarity: {
-						$subtract: [
-							1,
-							{
-								$let: {
-									vars: {
-										dotProduct: {
+					normalizedEmbedding: {
+						$map: {
+							input: "$summaryEmbedding",
+							as: "value",
+							in: {
+								$divide: [
+									"$$value",
+									{
+										$sqrt: {
 											$sum: {
 												$map: {
-													input: {
-														$range: [0, { $size: "$summaryEmbedding" }]
-													},
-													as: "index",
-													in: {
-														$multiply: [
-															{
-																$arrayElemAt: ["$summaryEmbedding", "$$index"]
-															},
-															{ $arrayElemAt: [queryVector, "$$index"] }
-														]
-													}
-												}
-											}
-										},
-										magnitudeA: {
-											$sqrt: {
-												$sum: {
-													$map: {
-														input: "$summaryEmbedding",
-														as: "value",
-														in: { $pow: ["$$value", 2] }
-													}
-												}
-											}
-										},
-										magnitudeB: {
-											$sqrt: {
-												$sum: {
-													$map: {
-														input: queryVector,
-														as: "value",
-														in: { $pow: ["$$value", 2] }
-													}
+													input: "$summaryEmbedding",
+													as: "val",
+													in: { $pow: ["$$val", 2] }
 												}
 											}
 										}
-									},
-									in: {
-										$divide: [
-											"$$dotProduct",
-											{ $multiply: ["$$magnitudeA", "$$magnitudeB"] }
-										]
 									}
+								]
+							}
+						}
+					},
+					normalizedQuery: {
+						$map: {
+							input: queryVector,
+							as: "value",
+							in: {
+								$divide: [
+									"$$value",
+									{
+										$sqrt: {
+											$sum: {
+												$map: {
+													input: queryVector,
+													as: "val",
+													in: { $pow: ["$$val", 2] }
+												}
+											}
+										}
+									}
+								]
+							}
+						}
+					}
+				}
+			},
+			{
+				$addFields: {
+					similarity: {
+						$sum: {
+							$map: {
+								input: { $range: [0, { $size: "$normalizedEmbedding" }] },
+								as: "index",
+								in: {
+									$multiply: [
+										{ $arrayElemAt: ["$normalizedEmbedding", "$$index"] },
+										{ $arrayElemAt: ["$normalizedQuery", "$$index"] }
+									]
 								}
 							}
-						]
+						}
 					}
 				}
 			},
@@ -93,33 +98,33 @@ export async function askQuestion(question: string, projectId: string) {
 					projectId: { $oid: projectId }
 				}
 			},
-			{
-				$sort: { similarity: 1 }
-			},
-			{
-				$limit: 10
-			},
+			{ $sort: { similarity: -1 } },
+			{ $limit: 10 },
 			{
 				$project: {
 					fileName: 1,
 					sourceCode: 1,
 					summary: 1,
-					similarity: 1,
-          summaryEmbedding: 1
+					similarity: 1
 				}
 			}
 		],
 		cursor: {}
 	})) as unknown as {
 		cursor: {
-			firstBatch: { fileName: string; sourceCode: string; summary: string; summaryEmbedding:unknown }[];
+			firstBatch: {
+				_id: { $oid: string };
+				fileName: string;
+				sourceCode: string;
+				summary: string;
+				similarity: number;
+			}[];
 		};
 		ok: number;
 	};
 
 	const result = rawResult.cursor.firstBatch;
-  console.log(result);
-  
+	console.log(result);
 
 	let context = "";
 
@@ -152,6 +157,9 @@ export async function askQuestion(question: string, projectId: string) {
       AI assistant will not apologize for previous responses, but instead will indicate new information was gained.
       AI assistant will not invent anything that is not drawn directly from the context.
       Answer in markdown syntax, with code snippets if needed. Be as detailed as possibled when answering.
+      Also, if you add code snippets, make sure the code is visible and colorful. The background color will be almost black.
+      So, make sure the colour of the text in pre tag of code snippet is of brighter color like white.
+      If the code snippet has the ffunctionality to copy code snippet, make sure it works properly.
       Answer should be relevant to the question.
       Sometimes question can be explain <File name> file. You should check whether any similar name file is present in the context.
       Example question: Explain styles.css file.
