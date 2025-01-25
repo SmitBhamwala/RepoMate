@@ -31,10 +31,10 @@ export async function indexGitHubRepo(
 	const docs = await loadGitHubRepo(githubUrl, gitHubToken);
 	const allEmbeddings = await generateEmbeddings(docs);
 	await Promise.allSettled(
-		allEmbeddings.map(async (embedding, index) => {
+		allEmbeddings.map(async (embedding) => {
 			if (!embedding) return;
 
-			const sourceCodeEmbedding = await db.sourceCodeEmbeddings.create({
+			await db.sourceCodeEmbeddings.create({
 				data: {
 					summary: embedding.summary,
 					sourceCode: embedding.sourceCode,
@@ -47,11 +47,14 @@ export async function indexGitHubRepo(
 	);
 }
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 async function generateEmbeddings(docs: Document[]) {
 	return await Promise.all(
 		docs.map(async (doc) => {
 			const summary = await summarizeCode(doc);
 			const embedding = await generateAiTextToVectorEmbedding(summary);
+			await sleep(6000);
 			return {
 				summary,
 				embedding,

@@ -53,5 +53,18 @@ export const projectRouter = createTRPCRouter({
 					projectId: input.projectId
 				}
 			});
+		}),
+    getEmbeddings: protectedProcedure
+		.input(
+			z.object({
+				projectId: z.string()
+			})
+		)
+		.query(async ({ ctx, input }) => {
+			return await ctx.db.sourceCodeEmbeddings.findMany({
+				where: {
+					projectId: input.projectId
+				}
+			});
 		})
 });

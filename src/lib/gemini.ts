@@ -93,7 +93,9 @@ export async function summarizeCode(doc: Document) {
 }
 
 export async function generateAiTextToVectorEmbedding(summary: string) {
-const vecterEmbeddingGenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY_3!);
+	const vecterEmbeddingGenAI = new GoogleGenerativeAI(
+		process.env.GEMINI_API_KEY_3!
+	);
 	const model = vecterEmbeddingGenAI.getGenerativeModel({
 		model: "text-embedding-004"
 	});

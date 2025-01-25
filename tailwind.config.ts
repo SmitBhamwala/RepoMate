@@ -90,5 +90,17 @@ export default {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"),
+    function ({ addUtilities }) {
+      addUtilities(
+        {
+          '.scrollbar-hidden': {
+            '-ms-overflow-style': 'none', /* for Internet Explorer */
+            'scrollbar-width': 'none', /* for Firefox */
+          },
+        },
+        ['responsive', 'hover']
+      );
+    }
+  ],
 } satisfies Config;
