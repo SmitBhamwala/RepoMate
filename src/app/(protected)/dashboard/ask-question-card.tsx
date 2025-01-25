@@ -14,12 +14,11 @@ import Image from "next/image";
 import { FormEvent, useState } from "react";
 import { askQuestion } from "./actions";
 import { readStreamableValue } from "ai/rsc";
-import { api } from "@/trpc/react";
 import MDEditor from "@uiw/react-md-editor";
 import CodeReferences from "./code-references";
 
 export default function AskQuestionCard() {
-	const { project, activeProjectId } = useProject();
+	const { project } = useProject();
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [question, setQuestion] = useState("");
 	const [loading, setLoading] = useState(false);
@@ -32,22 +31,17 @@ export default function AskQuestionCard() {
 	>([]);
 	const [answer, setAnswer] = useState("");
 
-	const { data: result } = api.project.getEmbeddings.useQuery({
-		projectId: activeProjectId
-	});
-
 	async function OnSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		setAnswer("");
 		setFileReferences([]);
-		if (!project?.id || !result) return;
+		if (!project?.id) return;
 
 		setLoading(true);
 
 		const { output, fileReferences } = await askQuestion(
 			question,
-			project.id,
-			result
+			project.id
 		);
 		setIsDialogOpen(true);
 		setFileReferences(fileReferences);
