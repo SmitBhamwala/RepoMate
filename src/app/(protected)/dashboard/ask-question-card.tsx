@@ -73,7 +73,7 @@ export default function AskQuestionCard() {
 
 					<MDEditor.Markdown
 						source={answer}
-						className="max-w-[70vw] !bg-white !text-gray-800 !h-full max-h-[40vh] overflow-scroll scrollbar-hidden"
+						className="max-w-[70vw] !h-full max-h-[40vh] overflow-scroll scrollbar-hidden"
 					/>
 
 					<div className="h-4"></div>

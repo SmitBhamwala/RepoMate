@@ -156,15 +156,14 @@ export async function askQuestion(question: string, projectId: string) {
       If the context does not provide the answer to question, the AI assistant will say, "I'm sorry, but I don't know the answer to that question.".
       AI assistant will not apologize for previous responses, but instead will indicate new information was gained.
       AI assistant will not invent anything that is not drawn directly from the context.
+
       Answer in markdown syntax, with code snippets if needed. Be as detailed as possibled when answering.
-      Also, if you add code snippets, make sure the code is visible and colorful. The background color will be almost black.
-      So, make sure the colour of the text in pre tag of code snippet is of brighter color like white.
-      If the code snippet has the ffunctionality to copy code snippet, make sure it works properly.
+
       Answer should be relevant to the question.
       Sometimes question can be explain <File name> file. You should check whether any similar name file is present in the context.
       Example question: Explain styles.css file.
       Example answer should be to find similar name file and explain the contents of that file. Don't widen the search to other irrelevant files.
-      The relevant file should have a higher similarity.
+      The relevant file should have a higher similarity.      
       `
 		});
 

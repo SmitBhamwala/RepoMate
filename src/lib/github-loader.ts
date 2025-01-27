@@ -54,7 +54,7 @@ async function generateEmbeddings(docs: Document[]) {
 		docs.map(async (doc) => {
 			const summary = await summarizeCode(doc);
 			const embedding = await generateAiTextToVectorEmbedding(summary);
-			await sleep(6000);
+			// await sleep(6000);
 			return {
 				summary,
 				embedding,
