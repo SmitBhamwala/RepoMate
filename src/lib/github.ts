@@ -12,7 +12,6 @@ type Response = {
 	commitAuthorName: string;
 	commitAuthorAvatar: string;
 	commitDate: string;
-	// summary: string;
 };
 
 export async function getCommitHashes(gitHubURL: string): Promise<Response[]> {
@@ -23,29 +22,27 @@ export async function getCommitHashes(gitHubURL: string): Promise<Response[]> {
 	}
 
 	const { data } = await octokit.rest.repos.listCommits({
-		owner: owner,
-		repo: repo
+		owner,
+		repo
 	});
 
 	const sortedCommits = data.sort(
-		(a: any, b: any) =>
-			new Date(b.commit.author?.date).getTime() -
-			new Date(a.commit.author?.date).getTime()
-	) as any[];
-
-	// const response = await octokit.request(`GET /repos/${owner}/${repo}/commits`);
+		(a, b) =>
+			new Date(b.commit.author?.date || 0).getTime() -
+			new Date(a.commit.author?.date || 0).getTime()
+	);
 
 	return sortedCommits.slice(0, 10).map((commit) => ({
-		commitHash: commit.sha as string,
+		commitHash: commit.sha,
 		commitMessage: commit.commit.message ?? "",
-		commitAuthorName: commit.commit.author.name ?? "",
-		commitAuthorAvatar: commit.author.avatar_url ?? "",
-		commitDate: commit.commit.author.date ?? ""
+		commitAuthorName: commit.commit.author?.name ?? "",
+		commitAuthorAvatar: commit.author?.avatar_url ?? "",
+		commitDate: commit.commit.author?.date ?? ""
 	}));
 }
 
 export async function pollCommits(projectId: string) {
-	const { project, gitHubURL } = await fetchProjectGithubUrl(projectId);
+	const { gitHubURL } = await fetchProjectGithubUrl(projectId);
 	const commitHashes = await getCommitHashes(gitHubURL);
 	const unprocessedCommits = await filterUnprocessedCommits(
 		projectId,
@@ -66,7 +63,7 @@ export async function pollCommits(projectId: string) {
 		return "";
 	});
 
-	const commits = await db.commits.createMany({
+	await db.commits.createMany({
 		data: summaries.map((summary, index) => {
 			return {
 				projectId: projectId,

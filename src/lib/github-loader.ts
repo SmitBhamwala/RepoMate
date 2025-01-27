@@ -47,7 +47,7 @@ export async function indexGitHubRepo(
 	);
 }
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function generateEmbeddings(docs: Document[]) {
 	return await Promise.all(
