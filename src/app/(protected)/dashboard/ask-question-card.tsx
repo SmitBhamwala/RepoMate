@@ -16,6 +16,7 @@ import { askQuestion } from "./actions";
 import { readStreamableValue } from "ai/rsc";
 import MDEditor from "@uiw/react-md-editor";
 import CodeReferences from "./code-references";
+import "./ask-question-card.css"
 
 export default function AskQuestionCard() {
 	const { project } = useProject();
@@ -39,10 +40,7 @@ export default function AskQuestionCard() {
 
 		setLoading(true);
 
-		const { output, fileReferences } = await askQuestion(
-			question,
-			project.id
-		);
+		const { output, fileReferences } = await askQuestion(question, project.id);
 		setIsDialogOpen(true);
 		setFileReferences(fileReferences);
 
@@ -71,10 +69,12 @@ export default function AskQuestionCard() {
 						</DialogTitle>
 					</DialogHeader>
 
-					<MDEditor.Markdown
-						source={answer}
-						className="max-w-[70vw] !h-full max-h-[40vh] overflow-scroll scrollbar-hidden"
-					/>
+					<div className="markdown-wrapper">
+						<MDEditor.Markdown
+							source={answer}
+							className="max-w-[70vw] !bg-white !text-gray-900 !h-full max-h-[40vh] overflow-scroll scrollbar-hidden"
+						/>
+					</div>
 
 					<div className="h-4"></div>
 					<CodeReferences fileReferences={fileReferences} />

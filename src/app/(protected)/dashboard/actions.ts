@@ -163,7 +163,6 @@ export async function askQuestion(question: string, projectId: string) {
       Sometimes question can be explain <File name> file. You should check whether any similar name file is present in the context.
       Example question: Explain styles.css file.
       Example answer should be to find similar name file and explain the contents of that file. Don't widen the search to other irrelevant files.
-      The relevant file should have a higher similarity.      
       `
 		});
 
