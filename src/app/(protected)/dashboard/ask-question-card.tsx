@@ -81,14 +81,39 @@ export default function AskQuestionCard() {
 
 			// Render the code block with syntax highlighting
 			return (
-				<SyntaxHighlighter
-					language={language}
-					style={atomOneDark}
-					PreTag="div"
-					wrapLines={true}
-					customStyle={{ whiteSpace: "pre-wrap" }}>
-					{codeString.replace(/\n$/, "")}
-				</SyntaxHighlighter>
+				<div>
+					{Children.map(children, (child, index) => {
+						if (isValidElement(child) && "children" in child.props) {
+							const childProps = child.props as { children?: React.ReactNode };
+							const codeContent =
+								typeof childProps.children === "string"
+									? childProps.children
+									: "";
+							return (
+								<SyntaxHighlighter
+									key={index} // Ensure each line gets a unique key
+									language={language}
+									style={atomOneDark}
+									PreTag="div"
+									customStyle={{ whiteSpace: "pre-wrap" }}>
+									{codeContent.trim()}
+								</SyntaxHighlighter>
+							);
+						}
+
+						// If the child is just text, handle it directly
+						return typeof child === "string" ? (
+							<SyntaxHighlighter
+								key={index}
+								language={language}
+								style={atomOneDark}
+								PreTag="div"
+								customStyle={{ whiteSpace: "pre-wrap" }}>
+								{child.trim()}
+							</SyntaxHighlighter>
+						) : null;
+					})}
+				</div>
 			);
 		}
 	};

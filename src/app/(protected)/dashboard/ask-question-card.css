@@ -2,16 +2,25 @@
   background-color: rgb(48, 49, 57);
   color: #f8f8f2;
   border-radius: 10px;
-}
+} */
 
 .markdown-wrapper code:not(pre code) {
-  background-color: #f0f0f0; 
-  color: #d63384; 
+	background-color: #f0f0f0;
+	color: #d63384;
 }
 
-.markdown-wrapper pre code {
+/* .markdown-wrapper pre code {
   background-color: #f0f0f0; 
   color: #d63384;
   border-radius: 7px;
   border: none;
 } */
+
+code.inline-code {
+	display: inline-block;
+	/* background-color: #f0f0f0; */
+	padding: 0.2em 0.4rem;
+	border-radius: 7px;
+	font-size: 0.9em;
+	/* color: #333; */
+}
