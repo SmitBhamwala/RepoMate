@@ -11,12 +11,14 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import useProject from "@/hooks/use-project";
 import Image from "next/image";
-import { FormEvent, useState } from "react";
+import { Children, FormEvent, isValidElement, useState } from "react";
 import { askQuestion } from "./actions";
 import { readStreamableValue } from "ai/rsc";
 import MDEditor from "@uiw/react-md-editor";
 import CodeReferences from "./code-references";
-import "./ask-question-card.css"
+import "./ask-question-card.css";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 export default function AskQuestionCard() {
 	const { project } = useProject();
@@ -53,6 +55,44 @@ export default function AskQuestionCard() {
 		setLoading(false);
 	}
 
+	const components = {
+		code: (props: React.HTMLAttributes<HTMLElement>) => {
+			const { children, className } = props;
+
+			const codeString =
+				Children.map(children, (child) => {
+					if (isValidElement(child) && "children" in child.props) {
+						const childProps = child.props as { children?: React.ReactNode }; // Type assertion
+						return typeof childProps.children === "string"
+							? childProps.children
+							: "";
+					}
+					return typeof child === "string" ? child : "";
+				})?.join("") ?? "";
+
+			// Handle inline code (e.g., `code`)
+			if (!className) {
+				return <code className="inline-code">{codeString}</code>;
+			}
+
+			// Extract the language from the className (e.g., "language-javascript")
+			const match = /language-(\w+)/.exec(className || "");
+			const language = match ? match[1] : "plaintext";
+
+			// Render the code block with syntax highlighting
+			return (
+				<SyntaxHighlighter
+					language={language}
+					style={atomOneDark}
+					PreTag="div"
+					wrapLines={true}
+					customStyle={{ whiteSpace: "pre-wrap" }}>
+					{codeString.replace(/\n$/, "")}
+				</SyntaxHighlighter>
+			);
+		}
+	};
+
 	return (
 		<>
 			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -72,6 +112,7 @@ export default function AskQuestionCard() {
 					<div className="markdown-wrapper">
 						<MDEditor.Markdown
 							source={answer}
+							components={components}
 							className="max-w-[70vw] !bg-white !text-gray-900 !h-full max-h-[40vh] overflow-scroll scrollbar-hidden"
 						/>
 					</div>
