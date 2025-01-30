@@ -16,7 +16,7 @@ type props = {
 
 export default function CodeReferences({ fileReferences }: props) {
 	const [tab, setTab] = useState(fileReferences[0]?.fileName);
-  
+
 	if (fileReferences.length === 0) return null;
 
 	return (
@@ -30,7 +30,8 @@ export default function CodeReferences({ fileReferences }: props) {
 							className={cn(
 								"px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap text-muted-foreground hover:bg-muted",
 								{
-									"bg-primary text-primary-foreground hover:bg-primary/80": tab === file.fileName
+									"bg-primary text-primary-foreground hover:bg-primary/80":
+										tab === file.fileName
 								}
 							)}>
 							{file.fileName}

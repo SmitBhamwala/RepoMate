@@ -61,7 +61,12 @@ export default function AskQuestionCard() {
 
 			const codeString =
 				Children.map(children, (child) => {
-					if (isValidElement(child) && "children" in child.props) {
+					if (
+						isValidElement(child) &&
+						child.props &&
+						typeof child.props === "object" &&
+						"children" in child.props
+					) {
 						const childProps = child.props as { children?: React.ReactNode }; // Type assertion
 						return typeof childProps.children === "string"
 							? childProps.children
@@ -83,7 +88,12 @@ export default function AskQuestionCard() {
 			return (
 				<div>
 					{Children.map(children, (child, index) => {
-						if (isValidElement(child) && "children" in child.props) {
+						if (
+							isValidElement(child) &&
+							child.props &&
+							typeof child.props === "object" &&
+							"children" in child.props
+						) {
 							const childProps = child.props as { children?: React.ReactNode };
 							const codeContent =
 								typeof childProps.children === "string"
