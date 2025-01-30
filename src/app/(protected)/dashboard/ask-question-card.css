@@ -5,7 +5,8 @@
 } */
 
 .markdown-wrapper code:not(pre code) {
-	background-color: #f0f0f0;
+	/* background-color: #f0f0f0; */
+	background-color: #fff0f0;
 	color: #d63384;
 }
 
