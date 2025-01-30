@@ -26,6 +26,8 @@ import CodeReferences from "./code-references";
 import "./ask-question-card.css";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { api } from "@/trpc/react";
+import { toast } from "sonner";
 
 export default function AskQuestionCard() {
 	const { project } = useProject();
@@ -40,6 +42,8 @@ export default function AskQuestionCard() {
 		}[]
 	>([]);
 	const [answer, setAnswer] = useState("");
+
+	const saveAnswer = api.project.saveAnswer.useMutation();
 
 	async function OnSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
@@ -123,15 +127,40 @@ export default function AskQuestionCard() {
 			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
 				<DialogContent className="max-w-[80vw] max-h-[100vh] overflow-scroll scrollbar-hidden">
 					<DialogHeader>
-						<DialogTitle>
-							<Image
-								src="/ai-hub.svg"
-								alt="App Logo"
-								width={40}
-								height={40}
-								quality={100}
-							/>
-						</DialogTitle>
+						<div className="flex items-center gap-2">
+							<DialogTitle>
+								<Image
+									src="/ai-hub.svg"
+									alt="App Logo"
+									width={40}
+									height={40}
+									quality={100}
+								/>
+							</DialogTitle>
+							<Button
+								variant="outline"
+								disabled={saveAnswer.isPending || saveAnswer.isSuccess}
+								onClick={() => {
+									saveAnswer.mutate(
+										{
+											question,
+											answer,
+											projectId: project!.id,
+											fileReferences
+										},
+										{
+											onSuccess: () => {
+												toast.success("Answer saved!");
+											},
+											onError: () => {
+												toast.error("Failed to save answer!");
+											}
+										}
+									);
+								}}>
+								{saveAnswer.isSuccess ? "Saved" : "Save Answer"}
+							</Button>
+						</div>
 					</DialogHeader>
 
 					<div className="markdown-wrapper">

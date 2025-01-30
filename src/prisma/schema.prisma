@@ -34,6 +34,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   userToProjects UserToProject[]
+  questionsAsked Questions[]
 
   @@map("users")
 }
@@ -75,6 +76,7 @@ model Project {
 
   commits              Commits[]
   SourceCodeEmbeddings SourceCodeEmbeddings[]
+  savedQuestions       Questions[]
 
   @@map("projects")
 }
@@ -85,11 +87,11 @@ model UserToProject {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId    String @db.ObjectId
-  projectId String @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
 
-  user    User    @relation(fields: [userId], references: [id])
-  project Project @relation(fields: [projectId], references: [id])
+  projectId String  @db.ObjectId
+  project   Project @relation(fields: [projectId], references: [id])
 
   @@unique([userId, projectId])
   @@map("userToProject")
@@ -104,10 +106,33 @@ model SourceCodeEmbeddings {
   fileName   String
   summary    String
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   projectId String  @db.ObjectId
   project   Project @relation(fields: [projectId], references: [id])
 
   @@map("sourceCodeEmbeddings")
+}
+
+model Questions {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  question String
+  answer   String
+
+  fileReferences Json?
+
+  projectId String  @db.ObjectId
+  project   Project @relation(fields: [projectId], references: [id])
+
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("questions")
 }
 
 model Commits {
