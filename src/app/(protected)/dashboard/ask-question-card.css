@@ -24,3 +24,19 @@ code.inline-code {
 	font-size: 0.9em;
 	/* color: #333; */
 }
+
+.custom-ul {
+	list-style-type: disc;
+	padding-left: 20px;
+	margin-bottom: 10px;
+}
+
+.custom-ol {
+	list-style-type: decimal;
+	padding-left: 20px;
+	margin-bottom: 10px;
+}
+
+.custom-li {
+	margin-bottom: 5px;
+}

@@ -11,7 +11,14 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import useProject from "@/hooks/use-project";
 import Image from "next/image";
-import { Children, FormEvent, isValidElement, useState } from "react";
+import {
+	Children,
+	FormEvent,
+	HTMLAttributes,
+	isValidElement,
+	ReactNode,
+	useState
+} from "react";
 import { askQuestion } from "./actions";
 import { readStreamableValue } from "ai/rsc";
 import MDEditor from "@uiw/react-md-editor";
@@ -56,76 +63,59 @@ export default function AskQuestionCard() {
 	}
 
 	const components = {
-		code: (props: React.HTMLAttributes<HTMLElement>) => {
+		code: (props: HTMLAttributes<HTMLElement>) => {
 			const { children, className } = props;
 
-			const codeString =
-				Children.map(children, (child) => {
-					if (
-						isValidElement(child) &&
-						child.props &&
-						typeof child.props === "object" &&
-						"children" in child.props
-					) {
-						const childProps = child.props as { children?: React.ReactNode }; // Type assertion
-						return typeof childProps.children === "string"
-							? childProps.children
-							: "";
-					}
-					return typeof child === "string" ? child : "";
-				})?.join("") ?? "";
-
-			// Handle inline code (e.g., `code`)
-			if (!className) {
-				return <code className="inline-code">{codeString}</code>;
-			}
-
-			// Extract the language from the className (e.g., "language-javascript")
 			const match = /language-(\w+)/.exec(className || "");
 			const language = match ? match[1] : "plaintext";
 
-			// Render the code block with syntax highlighting
-			return (
-				<div>
-					{Children.map(children, (child, index) => {
-						if (
-							isValidElement(child) &&
-							child.props &&
-							typeof child.props === "object" &&
-							"children" in child.props
-						) {
-							const childProps = child.props as { children?: React.ReactNode };
-							const codeContent =
-								typeof childProps.children === "string"
-									? childProps.children
-									: "";
-							return (
-								<SyntaxHighlighter
-									key={index} // Ensure each line gets a unique key
-									language={language}
-									style={atomOneDark}
-									PreTag="div"
-									customStyle={{ whiteSpace: "pre-wrap" }}>
-									{codeContent.trim()}
-								</SyntaxHighlighter>
-							);
-						}
+			if (!className) {
+				return <code className="inline-code">{children}</code>;
+			}
 
-						// If the child is just text, handle it directly
-						return typeof child === "string" ? (
-							<SyntaxHighlighter
-								key={index}
-								language={language}
-								style={atomOneDark}
-								PreTag="div"
-								customStyle={{ whiteSpace: "pre-wrap" }}>
-								{child.trim()}
-							</SyntaxHighlighter>
-						) : null;
-					})}
-				</div>
+			const codeString = Children.toArray(children)
+				.map((child) => {
+					if (typeof child === "string") {
+						return child.trimEnd();
+					}
+					if (
+						isValidElement<{ children?: ReactNode }>(child) &&
+						typeof child.props.children === "string"
+					) {
+						return child.props.children.trimEnd();
+					}
+					return "";
+				})
+				.join("\n");
+
+			return (
+				<SyntaxHighlighter
+					language={language}
+					style={atomOneDark}
+					// showLineNumbers
+					PreTag="div"
+					customStyle={{
+						fontSize: "1em",
+						lineHeight: "1.6",
+						whiteSpace: "pre",
+						padding: "1rem",
+						borderRadius: "7px",
+						overflowX: "auto"
+					}}>
+					{codeString}
+				</SyntaxHighlighter>
 			);
-		}
+		},
+
+		ul: ({ children }: HTMLAttributes<HTMLElement>) => (
+			<ul className="custom-ul">{children}</ul>
+		),
+		ol: ({ children }: HTMLAttributes<HTMLElement>) => (
+			<ol className="custom-ol">{children}</ol>
+		),
+		li: ({ children }: HTMLAttributes<HTMLElement>) => (
+			<li className="custom-li">{children}</li>
+		)
 	};
 
 	return (
