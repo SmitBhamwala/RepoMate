@@ -46,8 +46,12 @@ export async function pollCommits(projectId: string) {
 	const commitHashes = await getCommitHashes(gitHubURL);
 	const unprocessedCommits = await filterUnprocessedCommits(
 		projectId,
-		commitHashes
+		commitHashes.slice(0, 10)
 	);
+
+	if (unprocessedCommits.length === 0) {
+		return [];
+	}
 
 	const summaryResponses = await Promise.allSettled(
 		unprocessedCommits.map((commit) => {
@@ -103,7 +107,7 @@ async function fetchProjectGithubUrl(projectId: string) {
 		throw new Error("Project has no GitHub url!");
 	}
 
-	return { project, gitHubURL: project?.gitHubURL };
+	return { project, gitHubURL: project.gitHubURL };
 }
 
 async function filterUnprocessedCommits(
@@ -113,12 +117,12 @@ async function filterUnprocessedCommits(
 	const processedCommits = await db.commits.findMany({
 		where: { projectId }
 	});
+	const processedHashesSet = new Set(
+		processedCommits.map((commit) => commit.commitHash)
+	);
 
 	const unprocessedCommits = commitHashes.filter(
-		(commit) =>
-			!processedCommits.some(
-				(processedCommit) => processedCommit.commitHash === commit.commitHash
-			)
+		(commit) => !processedHashesSet.has(commit.commitHash)
 	);
 
 	return unprocessedCommits;
