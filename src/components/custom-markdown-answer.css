@@ -1,21 +1,8 @@
-/* .markdown-wrapper pre {
-  background-color: rgb(48, 49, 57);
-  color: #f8f8f2;
-  border-radius: 10px;
-} */
-
-.markdown-wrapper code:not(pre code) {
+code:not(pre code) {
 	/* background-color: #f0f0f0; */
-	background-color: #fff0f0;
+	background-color: #fff0f0 !important;
 	color: #d63384;
 }
-
-/* .markdown-wrapper pre code {
-  background-color: #f0f0f0; 
-  color: #d63384;
-  border-radius: 7px;
-  border: none;
-} */
 
 code.inline-code {
 	display: inline-block;
