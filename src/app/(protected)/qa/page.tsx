@@ -15,7 +15,6 @@ import Image from "next/image";
 import MDEditor from "@uiw/react-md-editor";
 import { CustomMarkdownAnswer } from "@/components/custom-markdown-answer";
 import CodeReferences from "../dashboard/code-references";
-import { User } from "lucide-react";
 
 export default function QAPage() {
 	const { activeProjectId } = useProject();
@@ -93,7 +92,24 @@ export default function QAPage() {
 						<div className="h-4"></div>
 						{question.fileReferences && (
 							<CodeReferences
-								fileReferences={question.fileReferences ?? ([] as any)}
+								fileReferences={
+									Array.isArray(question.fileReferences)
+										? question.fileReferences.filter(
+												(
+													ref
+												): ref is {
+													fileName: string;
+													sourceCode: string;
+													summary: string;
+												} =>
+													ref !== null &&
+													typeof ref === "object" &&
+													"fileName" in ref &&
+													"sourceCode" in ref &&
+													"summary" in ref
+										  )
+										: []
+								}
 							/>
 						)}
 					</SheetHeader>
