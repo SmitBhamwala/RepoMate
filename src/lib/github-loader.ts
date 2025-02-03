@@ -47,20 +47,43 @@ export async function indexGitHubRepo(
 	);
 }
 
-// const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function generateEmbeddings(docs: Document[]) {
-	return await Promise.all(
-		docs.map(async (doc) => {
+	const results = [];
+
+	for (const doc of docs) {
+		try {
 			const summary = await summarizeCode(doc);
 			const embedding = await generateAiTextToVectorEmbedding(summary);
-			// await sleep(6000);
-			return {
+			console.log(doc.metadata);
+
+			results.push({
 				summary,
 				embedding,
 				sourceCode: JSON.parse(JSON.stringify(doc.pageContent)),
 				fileName: doc.metadata.source
-			};
-		})
-	);
+			});
+
+			await sleep(5000);
+		} catch (error) {
+			console.error("Error processing document: ", error);
+		}
+	}
+
+	return results;
+
+	// return await Promise.all(
+	// 	docs.map(async (doc) => {
+	// 		const summary = await summarizeCode(doc);
+	// 		const embedding = await generateAiTextToVectorEmbedding(summary);
+	// 		await sleep(6000);
+	// 		return {
+	// 			summary,
+	// 			embedding,
+	// 			sourceCode: JSON.parse(JSON.stringify(doc.pageContent)),
+	// 			fileName: doc.metadata.source
+	// 		};
+	// 	})
+	// );
 }

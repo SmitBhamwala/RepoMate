@@ -20,6 +20,8 @@ import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { CustomMarkdownAnswer } from "@/components/custom-markdown-answer";
 import useRefetch from "@/hooks/use-refetch";
+import { Loader } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function AskQuestionCard() {
 	const { project } = useProject();
@@ -46,14 +48,22 @@ export default function AskQuestionCard() {
 
 		setLoading(true);
 
-		const { output, fileReferences } = await askQuestion(question, project.id);
-		setIsDialogOpen(true);
-		setFileReferences(fileReferences);
+		try {
+			const { output, fileReferences } = await askQuestion(
+				question.trimEnd(),
+				project.id
+			);
+			setIsDialogOpen(true);
+			setFileReferences(fileReferences);
 
-		for await (const delta of readStreamableValue(output)) {
-			if (delta) {
-				setAnswer((ans) => ans + delta);
+			for await (const delta of readStreamableValue(output)) {
+				if (delta) {
+					setAnswer((ans) => ans + delta);
+				}
 			}
+		} catch (error) {
+			console.log(error);
+			setLoading(false);
 		}
 
 		setLoading(false);
@@ -74,41 +84,49 @@ export default function AskQuestionCard() {
 									quality={100}
 								/>
 							</DialogTitle>
-							<Button
-								variant="outline"
-								disabled={saveAnswer.isPending || saveAnswer.isSuccess}
-								onClick={() => {
-									saveAnswer.mutate(
-										{
-											question,
-											answer,
-											projectId: project!.id,
-											fileReferences
-										},
-										{
-											onSuccess: () => {
-												toast.success("Answer saved!");
-												refetch();
+							{loading ? (
+								<Loader className="text-primary animate-spin" />
+							) : (
+								<Button
+									variant="outline"
+									className="relative z-10 inline-flex items-center justify-center w-full px-8 py-3 text-lg font-bold text-white transition-all duration-200 bg-gray-900 border-2 border-transparent sm:w-auto rounded-xl font-pj hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+									disabled={saveAnswer.isPending || saveAnswer.isSuccess}
+									onClick={() => {
+										saveAnswer.mutate(
+											{
+												question,
+												answer,
+												projectId: project!.id,
+												fileReferences
 											},
-											onError: () => {
-												toast.error("Failed to save answer!");
+											{
+												onSuccess: () => {
+													toast.success("Answer saved!");
+													refetch();
+												},
+												onError: () => {
+													toast.error("Failed to save answer!");
+												}
 											}
-										}
-									);
-								}}>
-								{saveAnswer.isSuccess ? "Saved" : "Save Answer"}
-							</Button>
+										);
+									}}>
+									{saveAnswer.isSuccess ? "Saved" : "Save Answer"}
+								</Button>
+							)}
 						</div>
 					</DialogHeader>
-
-					<MDEditor.Markdown
-						source={answer}
-						components={CustomMarkdownAnswer}
-						className="max-w-[70vw] !bg-white !text-gray-900 !h-full max-h-[40vh] overflow-scroll scrollbar-hidden"
-					/>
+					{answer ? (
+						<MDEditor.Markdown
+							source={answer}
+							components={CustomMarkdownAnswer}
+							className="max-w-[70vw] !bg-white !text-gray-900 !h-full max-h-[40vh] overflow-scroll scrollbar-hidden"
+						/>
+					) : (
+						<p className="flex justify-center items-center">Thinking...</p>
+					)}
 
 					<div className="h-4"></div>
-					<CodeReferences fileReferences={fileReferences} />
+					{fileReferences && <CodeReferences fileReferences={fileReferences} />}
 					<Button type="button" onClick={() => setIsDialogOpen(false)}>
 						Close
 					</Button>
@@ -124,12 +142,15 @@ export default function AskQuestionCard() {
 						<Textarea
 							placeholder="Which file should I edit to change the home page?"
 							value={question}
-							onChange={(e) => setQuestion(e.target.value)}
+							required
+							onChange={(e) => setQuestion(e.target.value.trimStart())}
 						/>
 						<div className="h-4"></div>
-						<Button type="submit" disabled={loading}>
-							Ask AI
-						</Button>
+						<div className={cn(loading ? "!cursor-not-allowed" : "", "w-fit")}>
+							<Button type="submit" disabled={loading}>
+								Ask AI
+							</Button>
+						</div>
 					</form>
 				</CardContent>
 			</Card>

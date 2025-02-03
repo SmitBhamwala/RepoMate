@@ -21,9 +21,12 @@ export default function MeetingCard() {
 			console.log(acceptedFiles);
 			const file = acceptedFiles[0];
 			const downloadURL = await uploadFile(file, setProgress);
+			console.log(downloadURL);
+
 			setIsUploading(false);
 		}
 	});
+	console.log(progress);
 
 	return (
 		<Card
