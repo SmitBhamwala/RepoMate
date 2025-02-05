@@ -12,7 +12,7 @@ export default function MeetingCard() {
 	const [progress, setProgress] = useState(0);
 	const { getRootProps, getInputProps } = useDropzone({
 		accept: {
-			audio: [".mp3", ".wav", ".m4a"]
+			"audio/*": [".mp3", ".wav", ".m4a"]
 		},
 		multiple: false,
 		maxSize: 50 * 1024 * 1024,
