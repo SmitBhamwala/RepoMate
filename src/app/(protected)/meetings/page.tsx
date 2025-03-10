@@ -4,8 +4,8 @@ import useProject from "@/hooks/use-project";
 import { api } from "@/trpc/react";
 import MeetingCard from "../dashboard/meeting-card";
 import Link from "next/link";
-import { Badge } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export default function MeetingsPage() {
   const { activeProjectId } = useProject();
@@ -15,6 +15,7 @@ export default function MeetingsPage() {
     },
     { refetchInterval: 4000 }
   );
+  
   return (
     <>
       <MeetingCard />
