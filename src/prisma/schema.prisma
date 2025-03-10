@@ -18,6 +18,11 @@ enum UserRole {
   USER
 }
 
+enum MeetingStatus {
+  PROCESSING
+  COMPLETED
+}
+
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
@@ -77,6 +82,7 @@ model Project {
   commits              Commits[]
   SourceCodeEmbeddings SourceCodeEmbeddings[]
   savedQuestions       Questions[]
+  meetings             Meetings[]
 
   @@map("projects")
 }
@@ -113,6 +119,42 @@ model SourceCodeEmbeddings {
   project   Project @relation(fields: [projectId], references: [id])
 
   @@map("sourceCodeEmbeddings")
+}
+
+model Meetings {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name       String
+  meetingURL String //Firebase storage url
+  status     MeetingStatus @default(PROCESSING)
+
+  projectId String  @db.ObjectId
+  project   Project @relation(fields: [projectId], references: [id])
+
+  issues Issues[]
+
+  @@map("meetings")
+}
+
+model Issues {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  start    String
+  end      String
+  gist     String
+  headline String
+  summary  String
+
+  meetingId String   @db.ObjectId
+  meeting   Meetings @relation(fields: [meetingId], references: [id])
+
+  @@map("issues")
 }
 
 model Questions {
