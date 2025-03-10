@@ -139,4 +139,28 @@ export const projectRouter = createTRPCRouter({
         },
       });
     }),
+  deleteMeeting: protectedProcedure
+    .input(z.object({ meetingId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.issues.deleteMany({
+        where: { meetingId: input.meetingId },
+      });
+      return await ctx.db.meetings.delete({
+        where: {
+          id: input.meetingId,
+        },
+      });
+    }),
+  getMeetingById: protectedProcedure
+    .input(z.object({ meetingId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.meetings.findUnique({
+        where: {
+          id: input.meetingId,
+        },
+        include: {
+          issues: true,
+        },
+      });
+    }),
 });

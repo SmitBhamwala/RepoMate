@@ -11,12 +11,34 @@ import { api } from "@/trpc/react";
 import useProject from "@/hooks/use-project";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import useRefetch from "@/hooks/use-refetch";
 
 export default function MeetingCard() {
   const { project } = useProject();
+  const processMeeting = useMutation({
+    mutationFn: async (data: {
+      meetingURL: string;
+      meetingId: string;
+      projectId: string;
+    }) => {
+      const { meetingURL, meetingId, projectId } = data;
+      const response = await fetch("/api/process-meeting", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ meetingURL, meetingId, projectId }),
+      });
+
+      const jsonData = await response.json();
+      return jsonData.data;
+    },
+  });
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const router = useRouter();
+  const refetch = useRefetch();
   const uploadMeeting = api.project.uploadMeeting.useMutation();
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -41,9 +63,15 @@ export default function MeetingCard() {
           name: file.name,
         },
         {
-          onSuccess: () => {
+          onSuccess: (meeting) => {
             toast.success("Meeting uploaded successfully");
             router.push("/meetings");
+            processMeeting.mutateAsync({
+              meetingURL: downloadURL,
+              meetingId: meeting.id,
+              projectId: project.id,
+            });
+            refetch();
           },
           onError: () => {
             toast.error("Failed to upload meeting");
@@ -56,10 +84,7 @@ export default function MeetingCard() {
   });
 
   return (
-    <Card
-      className="col-span-2 flex flex-col items-center justify-center p-10"
-      {...getRootProps()}
-    >
+    <Card className="col-span-2 flex flex-col items-center justify-center p-10">
       {!isUploading && (
         <>
           <Presentation className="h-10 w-10 animate-bounce" />
@@ -72,7 +97,7 @@ export default function MeetingCard() {
             Powered by AI
           </p>
           <div className="mt-6">
-            <Button disabled={isUploading}>
+            <Button disabled={isUploading} {...getRootProps()}>
               <Upload className="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden />
               Upload Meeting
               <input className="hidden" {...getInputProps()} />
