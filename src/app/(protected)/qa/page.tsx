@@ -60,7 +60,7 @@ export default function QAPage() {
 
 												<div className="text-left flex flex-col">
 													<div className="flex items-center gap-2">
-														<p className="text-gray-700 line-clamp-1 text-lg font-medium">
+														<p className="text-gray-700 line-clamp-1 text-base font-medium">
 															{question.question}
 														</p>
 														<span className="text-xs text-gray-400 whitespace-nowrap">
