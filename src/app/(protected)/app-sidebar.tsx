@@ -79,7 +79,7 @@ export default function AppSidebar() {
 				</div>
 			</SidebarHeader>
 			<SidebarContent>
-			{projects && projects.length > 0 && activeProjectId && (
+			{projects && projects.length > 0 && (
           <>
             <SidebarGroup>
               <SidebarGroupLabel>Current Project</SidebarGroupLabel>
