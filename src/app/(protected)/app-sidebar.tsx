@@ -79,79 +79,83 @@ export default function AppSidebar() {
 				</div>
 			</SidebarHeader>
 			<SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>Current Project</SidebarGroupLabel>
-            <Popover
-              open={projectDropdownOpen}
-              onOpenChange={setProjectDropdownOpen}
-            >
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  className="w-full justify-between"
-                >
-                  {projects && activeProjectId
-                    ? projects.find(
-                        (project) => project.id === activeProjectId
-                      )?.name
-                    : "Select Project"}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-full p-0">
-                <Command>
-                  <CommandInput placeholder="Search project" />
-                  <CommandList>
-                    <CommandEmpty>No projects found!</CommandEmpty>
-                    <CommandGroup>
-                      {projects?.map((project) => (
-                        <CommandItem
-                          key={project.id}
-                          value={project.id}
-                          className={cn(
-                            "cursor-pointer shadow-none",
-                            activeProjectId === project.id &&
-                              "bg-primary/10 hover:bg-primary/10"
-                          )}
-                          onSelect={(currentValue) => {
-                            // setValue(currentValue);
-                            setActiveProjectId(currentValue);
-                            router.push("/dashboard");
-                            setProjectDropdownOpen(false);
-                          }}
-                        >
-                          <Check
+			{projects && projects.length > 0 && activeProjectId && (
+          <>
+            <SidebarGroup>
+              <SidebarGroupLabel>Current Project</SidebarGroupLabel>
+              <Popover
+                open={projectDropdownOpen}
+                onOpenChange={setProjectDropdownOpen}
+              >
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-full justify-between"
+                  >
+                    {projects && activeProjectId
+                      ? projects.find(
+                          (project) => project.id === activeProjectId
+                        )?.name
+                      : "Select Project"}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0">
+                  <Command>
+                    <CommandInput placeholder="Search project" />
+                    <CommandList>
+                      <CommandEmpty>No projects found!</CommandEmpty>
+                      <CommandGroup>
+                        {projects?.map((project) => (
+                          <CommandItem
+                            key={project.id}
+                            value={project.id}
                             className={cn(
-                              "mr-2 h-4 w-4",
-                              activeProjectId === project.id
-                                ? "opacity-100"
-                                : "opacity-0"
+                              "cursor-pointer shadow-none",
+                              activeProjectId === project.id &&
+                                "bg-primary/10 hover:bg-primary/10"
                             )}
-                          />
-                          <div
-                            className={cn(
-                              "rounded-sm border size-6 flex items-center justify-center text-sm bg-white text-primary",
-                              {
-                                "bg-primary text-white":
-                                  project.id === activeProjectId,
-                              }
-                            )}
+                            onSelect={(currentValue) => {
+                              // setValue(currentValue);
+                              setActiveProjectId(currentValue);
+                              router.push("/dashboard");
+                              setProjectDropdownOpen(false);
+                            }}
                           >
-                            {project.name[0]}
-                          </div>
-                          <span>{project.name}</span>
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          </SidebarGroup>
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                activeProjectId === project.id
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                            <div
+                              className={cn(
+                                "rounded-sm border size-6 flex items-center justify-center text-sm bg-white text-primary",
+                                {
+                                  "bg-primary text-white":
+                                    project.id === activeProjectId,
+                                }
+                              )}
+                            >
+                              {project.name[0]}
+                            </div>
+                            <span>{project.name}</span>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </SidebarGroup>
 
-				<div className="flex w-full justify-center items-center">OR</div>
+            <div className="flex w-full justify-center items-center">OR</div>
+          </>
+        )}
 
 				<SidebarGroup>
           <SidebarGroupContent>
@@ -172,6 +176,7 @@ export default function AppSidebar() {
 
 				<SidebarSeparator />
 
+				{projects && projects.length > 0 && activeProjectId && (
           <SidebarGroup>
             <SidebarGroupLabel>Application</SidebarGroupLabel>
             <SidebarGroupContent>
@@ -196,6 +201,7 @@ export default function AppSidebar() {
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
+        )}
 
 			</SidebarContent>
 		</Sidebar>
