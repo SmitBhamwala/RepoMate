@@ -73,8 +73,15 @@ export default function MeetingsPage() {
                     { meetingId: meeting.id },
                     {
                       onSuccess: () => {
-                        toast.success("Meeting deleted successfully");
+                        toast.success("Meeting deleted successfully", {
+                          duration: 2000,
+                        });
                         refetch();
+                      },
+                      onError: () => {
+                        toast.error("Failed to delete meeting", {
+                          duration: 2000,
+                        });
                       },
                     }
                   )

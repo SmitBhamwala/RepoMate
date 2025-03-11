@@ -64,7 +64,7 @@ export default function MeetingCard() {
         },
         {
           onSuccess: (meeting) => {
-            toast.success("Meeting uploaded successfully");
+            toast.success("Meeting uploaded successfully", { duration: 2000 });
             router.push("/meetings");
             processMeeting.mutateAsync({
               meetingURL: downloadURL,
@@ -74,7 +74,7 @@ export default function MeetingCard() {
             refetch();
           },
           onError: () => {
-            toast.error("Failed to upload meeting");
+            toast.error("Failed to upload meeting", { duration: 2000 });
           },
         }
       );

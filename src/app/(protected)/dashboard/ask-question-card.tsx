@@ -100,11 +100,11 @@ export default function AskQuestionCard() {
 											},
 											{
 												onSuccess: () => {
-													toast.success("Answer saved!");
+													toast.success("Answer saved!", { duration: 2000 });
 													refetch();
 												},
 												onError: () => {
-													toast.error("Failed to save answer!");
+													toast.error("Failed to save answer!", { duration: 2000 });
 												}
 											}
 										);
