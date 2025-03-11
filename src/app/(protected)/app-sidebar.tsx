@@ -65,7 +65,7 @@ export default function AppSidebar() {
 	return (
 		<Sidebar collapsible="icon" variant="floating">
 			<SidebarHeader>
-				<div className="flex items-center gap-2">
+				<Link href="/dashboard" className="flex items-center gap-2">
 					<Image
 						src="/ai-hub.svg"
 						alt="App Logo"
@@ -76,7 +76,7 @@ export default function AppSidebar() {
 					{open && (
 						<h1 className="text-xl font-bold text-primary/80">GitHub AI</h1>
 					)}
-				</div>
+				</Link>
 			</SidebarHeader>
 			<SidebarContent>
 			{projects && projects.length > 0 && (
