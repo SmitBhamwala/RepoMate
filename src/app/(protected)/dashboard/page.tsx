@@ -47,7 +47,7 @@ export default function DashboardPage() {
 				</div>
 			</div>
 			<div className="mt-8"></div>
-			<CommitLog />
+			{project && <CommitLog />}
 		</div>
 	);
 }

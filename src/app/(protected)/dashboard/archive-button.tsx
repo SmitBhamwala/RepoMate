@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 export default function ArchiveButton() {
   const archiveProject = api.project.archiveProject.useMutation();
-  const { activeProjectId } = useProject();
+  const { activeProjectId, setActiveProjectId } = useProject();
   const refetch = useRefetch();
   const router = useRouter();
 
@@ -31,6 +31,7 @@ export default function ArchiveButton() {
                   duration: 2000,
                 });
                 refetch();
+                setActiveProjectId("");
                 router.push("/create");
               },
               onError: () => {
