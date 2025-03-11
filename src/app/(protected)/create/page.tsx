@@ -2,9 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import useProject from "@/hooks/use-project";
 import useRefetch from "@/hooks/use-refetch";
 import { api } from "@/trpc/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -18,6 +20,8 @@ export default function CreatePage() {
 	const { register, handleSubmit, reset } = useForm<FormInput>();
 	const createProject = api.project.createProject.useMutation();
 	const refetch = useRefetch();
+	const router = useRouter();
+	const { setActiveProjectId } = useProject();
 
 	function onSubmit(data: FormInput) {
 		toast.loading("Creating project");
@@ -28,11 +32,13 @@ export default function CreatePage() {
 				gitHubToken: data.githubToken
 			},
 			{
-				onSuccess: () => {
+				onSuccess: (project) => {
 					toast.dismiss();
 					toast.success("Project created successfully", { duration: 2000 });
 					refetch();
 					reset();
+					setActiveProjectId(project.id);
+					router.push("/dashboard");
 				},
 				onError: () => {
 					toast.dismiss();
