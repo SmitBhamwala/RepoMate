@@ -1,6 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
 	Sidebar,
 	SidebarContent,
@@ -11,13 +13,16 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarSeparator,
 	useSidebar
 } from "@/components/ui/sidebar";
 import useProject from "@/hooks/use-project";
 import { cn } from "@/lib/utils";
 import {
 	Bot,
-	CreditCard,
+	Check,
+	ChevronsUpDown,
+	// CreditCard,
 	LayoutDashboard,
 	Plus,
 	Presentation
@@ -25,6 +30,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 
 const items = [
 	{
@@ -42,11 +48,11 @@ const items = [
 		url: "/meetings",
 		icon: Presentation
 	},
-	{
-		title: "Billing",
-		url: "/billing",
-		icon: CreditCard
-	}
+	// {
+	// 	title: "Billing",
+	// 	url: "/billing",
+	// 	icon: CreditCard
+	// }
 ];
 
 export default function AppSidebar() {
@@ -54,6 +60,7 @@ export default function AppSidebar() {
 	const router = useRouter();
 	const { open } = useSidebar();
 	const { projects, activeProjectId, setActiveProjectId } = useProject();
+	const [projectDropdownOpen, setProjectDropdownOpen] = useState(false);
 
 	return (
 		<Sidebar collapsible="icon" variant="floating">
@@ -72,75 +79,124 @@ export default function AppSidebar() {
 				</div>
 			</SidebarHeader>
 			<SidebarContent>
-				<SidebarGroup>
-					<SidebarGroupLabel>Application</SidebarGroupLabel>
-					<SidebarGroupContent>
-						<SidebarMenu>
-							{items.map((item) => {
-								return (
-									<SidebarMenuItem key={item.title}>
-										<SidebarMenuButton asChild>
-											<Link
-												href={item.url}
-												className={cn({
-													"!bg-primary !text-white": pathname === item.url
-												})}>
-												<item.icon />
-												<span>{item.title}</span>
-											</Link>
-										</SidebarMenuButton>
-									</SidebarMenuItem>
-								);
-							})}
-						</SidebarMenu>
-					</SidebarGroupContent>
-				</SidebarGroup>
+          <SidebarGroup>
+            <SidebarGroupLabel>Current Project</SidebarGroupLabel>
+            <Popover
+              open={projectDropdownOpen}
+              onOpenChange={setProjectDropdownOpen}
+            >
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open}
+                  className="w-full justify-between"
+                >
+                  {projects && activeProjectId
+                    ? projects.find(
+                        (project) => project.id === activeProjectId
+                      )?.name
+                    : "Select Project"}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-full p-0">
+                <Command>
+                  <CommandInput placeholder="Search project" />
+                  <CommandList>
+                    <CommandEmpty>No projects found!</CommandEmpty>
+                    <CommandGroup>
+                      {projects?.map((project) => (
+                        <CommandItem
+                          key={project.id}
+                          value={project.id}
+                          className={cn(
+                            "cursor-pointer shadow-none",
+                            activeProjectId === project.id &&
+                              "bg-primary/10 hover:bg-primary/10"
+                          )}
+                          onSelect={(currentValue) => {
+                            // setValue(currentValue);
+                            setActiveProjectId(currentValue);
+                            router.push("/dashboard");
+                            setProjectDropdownOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              activeProjectId === project.id
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          <div
+                            className={cn(
+                              "rounded-sm border size-6 flex items-center justify-center text-sm bg-white text-primary",
+                              {
+                                "bg-primary text-white":
+                                  project.id === activeProjectId,
+                              }
+                            )}
+                          >
+                            {project.name[0]}
+                          </div>
+                          <span>{project.name}</span>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          </SidebarGroup>
+
+				<div className="flex w-full justify-center items-center">OR</div>
 
 				<SidebarGroup>
-					<SidebarGroupLabel>Your Projects</SidebarGroupLabel>
-					<SidebarGroupContent>
-						<SidebarMenu>
-							{projects?.map((project) => {
-								return (
-									<SidebarMenuItem key={project.id}>
-										<SidebarMenuButton asChild>
-											<div
-												className="cursor-pointer"
-												onClick={() => {
-													setActiveProjectId(project.id);
-													router.push("/dashboard");
-												}}
-											>
-												<div
-													className={cn(
-														"rounded-sm border size-6 flex items-center justify-center text-sm bg-white text-primary",
-														{
-															"bg-primary text-white":
-																project.id === activeProjectId
-														}
-													)}>
-													{project.name[0]}
-												</div>
-												<span>{project.name}</span>
-											</div>
-										</SidebarMenuButton>
-									</SidebarMenuItem>
-								);
-							})}
-							<div className="h-2"></div>
-							{open && (
-								<SidebarMenuItem>
-									<Link href="/create">
-										<Button size="sm" variant="outline" className="w-fit">
-											<Plus />
-											Create Project
-										</Button>
-									</Link>
-								</SidebarMenuItem>
-							)}
-						</SidebarMenu>
-					</SidebarGroupContent>
-				</SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {open && (
+                <SidebarMenuItem>
+                  <Link href="/create">
+                    <Button size="sm" variant="outline" className="w-full">
+                      <Plus />
+                      Create New Project
+                    </Button>
+                  </Link>
+                </SidebarMenuItem>
+              )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+				<SidebarSeparator />
+
+          <SidebarGroup>
+            <SidebarGroupLabel>Application</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {items.map((item) => {
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild>
+                        <Link
+                          href={item.url}
+                          className={cn({
+                            "!bg-primary !text-white": pathname === item.url,
+                          })}
+                        >
+                          <item.icon />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
 			</SidebarContent>
 		</Sidebar>
 	);
