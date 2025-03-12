@@ -30,8 +30,7 @@ export default function SidebarLayout({
                   <AvatarImage
                     src={
                       session?.user.image ||
-                      "https://github.com/shadcn.png" ||
-                      ""
+                      "user.png"
                     }
                   />
                 </Avatar>

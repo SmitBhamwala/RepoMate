@@ -23,7 +23,7 @@ export const projectRouter = createTRPCRouter({
               userId: ctx.user.user.id,
             },
           },
-          deletedAt: null
+          deletedAt: null,
         },
       });
       await indexGitHubRepo(project.id, input.gitHubURL, input.gitHubToken);
@@ -38,7 +38,7 @@ export const projectRouter = createTRPCRouter({
             userId: ctx.user.user.id,
           },
         },
-        deletedAt: null
+        deletedAt: null,
       },
     });
   }),
@@ -174,6 +174,18 @@ export const projectRouter = createTRPCRouter({
         },
         data: {
           deletedAt: new Date(),
+        },
+      });
+    }),
+  getTeamMembers: protectedProcedure
+    .input(z.object({ projectId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.userToProject.findMany({
+        where: {
+          projectId: input.projectId,
+        },
+        include: {
+          user: true,
         },
       });
     }),
