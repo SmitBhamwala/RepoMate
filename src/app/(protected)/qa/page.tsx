@@ -40,7 +40,7 @@ export default function QAPage() {
 											<div className="flex items-center gap-4 bg-white rounded-lg p-4 shadow border">
 												{question.user.image ? (
 													<Image
-														src={question.user.image}
+														src={question.user.image || "/user.png"}
 														alt="Picture of the user who asked this question"
 														width={30}
 														height={30}

@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -21,21 +23,37 @@ export default function InviteButton() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Invite Team Members</DialogTitle>
+            <DialogDescription>
+              <p className="mt-4 text-sm italic text-gray-500">
+                Note: Anyone with this link will be able to join this project.
+              </p>
+            </DialogDescription>
+            <DialogDescription>
+              <p className="text-sm text-gray-500">
+                Click on the link below to copy
+              </p>
+            </DialogDescription>
           </DialogHeader>
-          <p className="text-sm text-gray-500">
-            Ask them to copy and paste this link
-          </p>
-          <Input
-            className="mt-2 cursor-pointer"
-            readOnly
-            onClick={() => {
-              navigator.clipboard.writeText(
-                `${window.location.origin}/join/${activeProjectId}`
-              );
-              toast.success("Copied to clipboard", { duration: 2000 });
-            }}
-            value={`${window.location.origin}/join/${activeProjectId}`}
-          />
+
+          <DialogFooter>
+            <Input
+              className="cursor-pointer focus-visible:ring-transparent"
+              readOnly
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  navigator.clipboard.writeText(
+                    `${window.location.origin}/join/${activeProjectId}`
+                  );
+                  toast.success("Copied to clipboard", { duration: 2000 });
+                }
+              }}
+              value={
+                typeof window !== "undefined"
+                  ? `${window.location.origin}/join/${activeProjectId}`
+                  : ""
+              }
+            />
+          </DialogFooter>
         </DialogContent>
       </Dialog>
       <Button size="sm" onClick={() => setOpen(true)}>
