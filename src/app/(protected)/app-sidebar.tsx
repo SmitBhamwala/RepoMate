@@ -92,14 +92,22 @@ export default function AppSidebar() {
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-full justify-between"
+                    className={cn(
+                      "w-full",
+                      open ? "justify-between" : "justify-center"
+                    )}
                   >
-                    {projects && activeProjectId
+                    {open && projects && activeProjectId
                       ? projects.find(
                           (project) => project.id === activeProjectId
                         )?.name
-                      : "Select Project"}
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      : open && "Select Project"}
+                    <ChevronsUpDown
+                      className={cn(
+                        "h-4 w-4 shrink-0 opacity-50",
+                        open && "ml-2"
+                      )}
+                    />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-full p-0">
@@ -156,19 +164,17 @@ export default function AppSidebar() {
           </>
         )}
 
-				<SidebarGroup>
+        <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {open && (
-                <SidebarMenuItem>
-                  <Link href="/create">
-                    <Button size="sm" variant="outline" className="w-full">
-                      <Plus />
-                      Create New Project
-                    </Button>
-                  </Link>
-                </SidebarMenuItem>
-              )}
+              <SidebarMenuItem>
+                <Link href="/create">
+                  <Button size="sm" variant="outline" className="w-full">
+                    <Plus />
+                    {open && "Create New Project"}
+                  </Button>
+                </Link>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
