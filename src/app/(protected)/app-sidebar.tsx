@@ -118,7 +118,6 @@ export default function AppSidebar() {
                                 "bg-primary/10 hover:bg-primary/10"
                             )}
                             onSelect={(currentValue) => {
-                              // setValue(currentValue);
                               setActiveProjectId(currentValue);
                               router.push("/dashboard");
                               setProjectDropdownOpen(false);
@@ -192,7 +191,7 @@ export default function AppSidebar() {
                           })}
                         >
                           <item.icon />
-                          <span>{item.title}</span>
+                          {open && <span>{item.title}</span>}
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>

@@ -1,6 +1,6 @@
 "use client";
 
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AppSidebar from "./app-sidebar";
 import { SessionProvider, signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ export default function SidebarLayout({
 				<main className="w-full m-2">
           <div className="flex items-center justify-end gap-2 border-sidebar-border bg-sidebar border shadow rounded-md p-2 px-4">
             {/* <SearchBar /> */}
-            <p>{session?.user.name}</p>
+            <SidebarTrigger />
 
             <div className="ml-auto"></div>
             <DropdownMenu>
