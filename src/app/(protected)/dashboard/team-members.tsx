@@ -7,10 +7,12 @@ import {
 } from "@/components/ui/hover-card";
 import useProject from "@/hooks/use-project";
 import { api } from "@/trpc/react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 
 export default function TeamMembers() {
   const { activeProjectId } = useProject();
+  const { data: session } = useSession();
   const { data: members } = api.project.getTeamMembers.useQuery({
     projectId: activeProjectId,
   });
@@ -29,8 +31,14 @@ export default function TeamMembers() {
                 className="rounded-full cursor-pointer"
               />
             </HoverCardTrigger>
-            <HoverCardContent side="top" className="flex items-center justify-center w-fit">
-              <p className="text-sm">{member.user.name || "User"}</p>
+            <HoverCardContent
+              side="top"
+              className="flex items-center justify-center w-fit"
+            >
+              <p className="text-sm">
+                {member.user.name || "User"}
+                {member.user.id === session?.user.id ? " (You)" : ""}
+              </p>
             </HoverCardContent>
           </HoverCard>
         </div>
