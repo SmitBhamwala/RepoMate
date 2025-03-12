@@ -9,8 +9,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import useProject from "@/hooks/use-project";
+import { LinkIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -22,23 +22,16 @@ export default function InviteButton() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Invite Team Members</DialogTitle>
-            <DialogDescription>
-              <p className="mt-4 text-sm italic text-gray-500">
-                Note: Anyone with this link will be able to join this project.
-              </p>
-            </DialogDescription>
-            <DialogDescription>
-              <p className="text-sm text-gray-500">
-                Click on the link below to copy
-              </p>
+            <DialogTitle className="text-xl">Invite Team Members</DialogTitle>
+            <DialogDescription className="!mt-4 text-sm italic text-gray-500">
+              Note: Anyone with this link will be able to join this project.
             </DialogDescription>
           </DialogHeader>
 
-          <DialogFooter>
-            <Input
-              className="cursor-pointer focus-visible:ring-transparent"
-              readOnly
+          <DialogFooter className="flex !justify-start items-center">
+            <Button
+              size="sm"
+              variant="default"
               onClick={() => {
                 if (typeof window !== "undefined") {
                   navigator.clipboard.writeText(
@@ -47,12 +40,10 @@ export default function InviteButton() {
                   toast.success("Copied to clipboard", { duration: 2000 });
                 }
               }}
-              value={
-                typeof window !== "undefined"
-                  ? `${window.location.origin}/join/${activeProjectId}`
-                  : ""
-              }
-            />
+            >
+              <LinkIcon />
+              Copy Link
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
