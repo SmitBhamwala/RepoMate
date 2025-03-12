@@ -34,10 +34,12 @@ export default function ArchiveButton() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              Are you sure you want to archive this project?
+              Are you sure you want to delete this project?
             </DialogTitle>
             <DialogDescription>
-              This action cannot be undone. This will delete your project.
+              Note: Project will be deleted for all team members.
+              <br />
+              This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -60,7 +62,7 @@ export default function ArchiveButton() {
                   { projectId: activeProjectId },
                   {
                     onSuccess: () => {
-                      toast.success("Project archived successfully", {
+                      toast.success("Project deleted successfully", {
                         duration: 2000,
                       });
                       refetch();
@@ -69,7 +71,7 @@ export default function ArchiveButton() {
                       router.push("/create");
                     },
                     onError: () => {
-                      toast.error("Failed to archive project", {
+                      toast.error("Failed to delete project", {
                         duration: 2000,
                       });
                     },
@@ -88,7 +90,7 @@ export default function ArchiveButton() {
         variant="destructive"
         onClick={() => setArchiveConfirmModalopen(true)}
       >
-        Archive
+        Delete
       </Button>
     </>
   );
