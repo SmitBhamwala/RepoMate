@@ -18,9 +18,9 @@ export default function CodeReferences({ fileReferences }: props) {
 	const [tab, setTab] = useState(fileReferences[0].fileName);
 
 	return (
-		<div className="max-w-[70vw]">
+		<div className="max-w-[75vw]">
 			<Tabs value={tab} onValueChange={setTab}>
-				<div className="overflow-scroll scrollbar-hidden flex gap-2 bg-gray-200 p-1 rounded-md">
+				<div className="overflow-x-scroll flex gap-2 bg-gray-200 p-1 rounded-md">
 					{fileReferences.map((file) => (
 						<button
 							onClick={() => setTab(file.fileName)}
@@ -40,7 +40,7 @@ export default function CodeReferences({ fileReferences }: props) {
 					<TabsContent
 						key={file.fileName}
 						value={file.fileName}
-						className="max-h-[40vh] overflow-scroll scrollbar-hidden max-w-7xl rounded-md">
+						className="max-h-[40vh] overflow-y-auto max-w-7xl rounded-md">
 						<SyntaxHighlighter
 							language={file.fileName.split(".")[1]}
 							style={oneDark}>

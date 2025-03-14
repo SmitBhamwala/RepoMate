@@ -122,7 +122,7 @@ export default function AskQuestionCard() {
             <MDEditor.Markdown
               source={answer}
               components={CustomMarkdownAnswer}
-              className="max-w-[70vw] !bg-white !text-gray-900 !h-full max-h-[40vh] overflow-scroll scrollbar-hidden"
+              className="pr-6 !bg-white !text-gray-900 !h-full max-h-[40vh] overflow-y-scroll"
             />
           ) : (
             <p className="flex justify-center items-center">Thinking...</p>
