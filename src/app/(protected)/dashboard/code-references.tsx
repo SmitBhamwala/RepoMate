@@ -15,9 +15,7 @@ type props = {
 };
 
 export default function CodeReferences({ fileReferences }: props) {
-	const [tab, setTab] = useState(fileReferences[0]?.fileName);
-
-	if (fileReferences.length === 0) return null;
+	const [tab, setTab] = useState(fileReferences[0].fileName);
 
 	return (
 		<div className="max-w-[70vw]">

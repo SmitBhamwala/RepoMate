@@ -48,13 +48,14 @@ export default function AskQuestionCard() {
 
 		setLoading(true);
 
-		try {
-			const { output, fileReferences } = await askQuestion(
-				question.trimEnd(),
-				project.id
-			);
-			setIsDialogOpen(true);
-			setFileReferences(fileReferences);
+    try {
+      setIsDialogOpen(true);
+      const { output, fileReferences } = await askQuestion(
+        question.trimEnd(),
+        project.id
+      );
+      saveAnswer.reset();
+      setFileReferences(fileReferences);
 
 			for await (const delta of readStreamableValue(output)) {
 				if (delta) {
@@ -69,90 +70,93 @@ export default function AskQuestionCard() {
 		setLoading(false);
 	}
 
-	return (
-		<>
-			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-				<DialogContent className="max-w-[80vw] max-h-[100vh] overflow-scroll scrollbar-hidden">
-					<DialogHeader>
-						<div className="flex items-center gap-2">
-							<DialogTitle>
-								<Image
-									src="/ai-hub.svg"
-									alt="App Logo"
-									width={40}
-									height={40}
-									quality={100}
-								/>
-							</DialogTitle>
-							{loading ? (
-								<Loader className="text-primary animate-spin" />
-							) : (
-								<Button
-									variant="outline"
-									disabled={saveAnswer.isPending || saveAnswer.isSuccess}
-									onClick={() => {
-										saveAnswer.mutate(
-											{
-												question,
-												answer,
-												projectId: project!.id,
-												fileReferences
-											},
-											{
-												onSuccess: () => {
-													toast.success("Answer saved!", { duration: 2000 });
-													refetch();
-												},
-												onError: () => {
-													toast.error("Failed to save answer!", { duration: 2000 });
-												}
-											}
-										);
-									}}>
-									{saveAnswer.isSuccess ? "Saved" : "Save Answer"}
-								</Button>
-							)}
-						</div>
-					</DialogHeader>
-					{answer ? (
-						<MDEditor.Markdown
-							source={answer}
-							components={CustomMarkdownAnswer}
-							className="max-w-[70vw] !bg-white !text-gray-900 !h-full max-h-[40vh] overflow-scroll scrollbar-hidden"
-						/>
-					) : (
-						<p className="flex justify-center items-center">Thinking...</p>
-					)}
+  return (
+    <>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-[80vw] max-h-[100vh] overflow-scroll scrollbar-hidden">
+          <DialogHeader>
+            <div className="flex items-center gap-2">
+              <DialogTitle>
+                <Image
+                  src="/ai-hub.svg"
+                  alt="App Logo"
+                  width={40}
+                  height={40}
+                  quality={100}
+                />
+              </DialogTitle>
+              {loading ? (
+                <Loader className="text-primary animate-spin" />
+              ) : (
+                <Button
+                  variant="outline"
+                  disabled={saveAnswer.isPending || saveAnswer.isSuccess}
+                  onClick={() => {
+                    saveAnswer.mutate(
+                      {
+                        question,
+                        answer,
+                        projectId: project!.id,
+                        fileReferences,
+                      },
+                      {
+                        onSuccess: () => {
+                          toast.success("Answer saved!", { duration: 3000 });
+                          refetch();
+                        },
+                        onError: () => {
+                          toast.error("Failed to save answer!", {
+                            duration: 3000,
+                          });
+                        },
+                      }
+                    );
+                  }}
+                >
+                  {saveAnswer.isSuccess ? "Saved" : "Save Answer"}
+                </Button>
+              )}
+            </div>
+          </DialogHeader>
+          {answer ? (
+            <MDEditor.Markdown
+              source={answer}
+              components={CustomMarkdownAnswer}
+              className="max-w-[70vw] !bg-white !text-gray-900 !h-full max-h-[40vh] overflow-scroll scrollbar-hidden"
+            />
+          ) : (
+            <p className="flex justify-center items-center">Thinking...</p>
+          )}
 
-					<div className="h-4"></div>
-					{fileReferences && <CodeReferences fileReferences={fileReferences} />}
-					<Button type="button" onClick={() => setIsDialogOpen(false)}>
-						Close
-					</Button>
-				</DialogContent>
-			</Dialog>
+          <div className="h-4"></div>
+          {fileReferences.length > 0 && <CodeReferences fileReferences={fileReferences} />}
+          <Button type="button" onClick={() => setIsDialogOpen(false)}>
+            Close
+          </Button>
+        </DialogContent>
+      </Dialog>
 
-			<Card className="relative col-span-3">
-				<CardHeader>
-					<CardTitle>Ask a question</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<form onSubmit={(e: FormEvent<HTMLFormElement>) => OnSubmit(e)}>
-						<Textarea
-							placeholder="Which file should I edit to change the home page?"
-							value={question}
-							required
-							onChange={(e) => setQuestion(e.target.value.trimStart())}
-						/>
-						<div className="h-4"></div>
-						<div className={cn(loading ? "!cursor-not-allowed" : "", "w-fit")}>
-							<Button type="submit" disabled={loading}>
-								Ask AI
-							</Button>
-						</div>
-					</form>
-				</CardContent>
-			</Card>
-		</>
-	);
+      <Card className="relative col-span-3">
+        <CardHeader>
+          <CardTitle>Ask a question</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={(e: FormEvent<HTMLFormElement>) => OnSubmit(e)}>
+            <Textarea
+              placeholder="Which file should I edit to change the home page?"
+              value={question}
+              required
+              onChange={(e) => setQuestion(e.target.value.trimStart())}
+            />
+            <div className="h-4"></div>
+            <div className={cn(loading ? "!cursor-not-allowed" : "", "w-fit")}>
+              <Button type="submit" disabled={loading}>
+                Ask AI
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </>
+  );
 }
