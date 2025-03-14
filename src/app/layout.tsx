@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
@@ -15,14 +15,20 @@ export const metadata: Metadata = {
 	description: "Generate GitHub repo's summary using AI"
 };
 
+export const viewport: Viewport = {
+	width: "device-width",
+	initialScale: 1,
+	maximumScale: 5
+};
+
 export default function RootLayout({
 	children
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
-			<body className={`${poppins.className} antialiased`}>
+		<html lang="en" className="!scroll-smooth">
+			<body className={`${poppins.className} !antialiased`}>
 				<SessionProvider>
 					<TRPCReactProvider>{children}</TRPCReactProvider>
 					<Toaster richColors />
