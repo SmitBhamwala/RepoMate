@@ -34,7 +34,7 @@ export default function CreatePage() {
 			{
 				onSuccess: (project) => {
 					toast.dismiss();
-					toast.success("Project created successfully", { duration: 2000 });
+					toast.success("Project created successfully", { duration: 3000 });
 					refetch();
 					reset();
 					setActiveProjectId(project.id);
@@ -42,7 +42,7 @@ export default function CreatePage() {
 				},
 				onError: () => {
 					toast.dismiss();
-					toast.error("Error creating project", { duration: 2000 });
+					toast.error("Error creating project", { duration: 3000 });
 				}
 			}
 		);

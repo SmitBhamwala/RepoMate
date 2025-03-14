@@ -37,7 +37,7 @@ export default function InviteButton() {
                   navigator.clipboard.writeText(
                     `${window.location.origin}/join/${activeProjectId}`
                   );
-                  toast.success("Copied to clipboard", { duration: 2000 });
+                  toast.success("Copied to clipboard", { duration: 3000 });
                 }
               }}
             >

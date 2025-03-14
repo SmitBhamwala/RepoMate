@@ -63,7 +63,7 @@ export default function ArchiveButton() {
                   {
                     onSuccess: () => {
                       toast.success("Project deleted successfully", {
-                        duration: 2000,
+                        duration: 3000,
                       });
                       refetch();
                       setActiveProjectId("");
@@ -72,7 +72,7 @@ export default function ArchiveButton() {
                     },
                     onError: () => {
                       toast.error("Failed to delete project", {
-                        duration: 2000,
+                        duration: 3000,
                       });
                     },
                   }
