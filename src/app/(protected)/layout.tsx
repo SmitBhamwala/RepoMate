@@ -6,6 +6,7 @@ import { SessionProvider, signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import useProject from "@/hooks/use-project";
 
 export default function SidebarLayout({
 	children
@@ -13,6 +14,7 @@ export default function SidebarLayout({
 	children: React.ReactNode;
 }) {
 	const { data: session } = useSession();
+  const { setActiveProjectId } = useProject();
 
 	return (
 		<SessionProvider>
@@ -43,7 +45,10 @@ export default function SidebarLayout({
                   <Button
                     className="w-full"
                     type="submit"
-                    onClick={() => signOut()}
+                    onClick={() => {
+                      setActiveProjectId("");
+                      signOut();
+                    }}
                   >
                     Logout
                   </Button>

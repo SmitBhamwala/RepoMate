@@ -50,7 +50,7 @@ export default function CreatePage() {
 	}
 
 	return (
-		<div className="flex items-center justify-center gap-12 h-full">
+		<div className="flex flex-col lg:flex-row items-center justify-center gap-12 h-full">
 			<Image
 				src="/undraw_developer-activity_blue.svg"
 				className="h-56 w-auto"

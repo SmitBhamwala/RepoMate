@@ -11,7 +11,11 @@ import InviteButton from "./invite-button";
 import TeamMembers from "./team-members";
 
 export default function DashboardPage() {
-	const { project } = useProject();
+	const { project, activeProjectId } = useProject();
+
+	if (!activeProjectId) {
+		return <div className="flex items-center justify-center">Please select a project from the sidebar or create a new project</div>;
+	}
 
 	return (
 		<div>
