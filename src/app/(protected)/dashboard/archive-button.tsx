@@ -79,7 +79,7 @@ export default function ArchiveButton() {
                 );
               }}
             >
-              Continue
+              Delete
             </Button>
           </DialogFooter>
         </DialogContent>
