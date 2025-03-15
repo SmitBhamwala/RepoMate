@@ -18,6 +18,7 @@ import CodeReferences from "../dashboard/code-references";
 import { Button } from "@/components/ui/button";
 import useRefetch from "@/hooks/use-refetch";
 import { toast } from "sonner";
+import { Trash2 } from "lucide-react";
 
 export default function QAPage() {
   const { activeProjectId } = useProject();
@@ -42,10 +43,10 @@ export default function QAPage() {
               ? questions.map((question, index) => {
                   return (
                     <Fragment key={question.id}>
-                      <div className="flex flex-col lg:flex-row items-center justify-between lg:gap-4 bg-white rounded-lg shadow border">
+                      <div className="flex flex-col lg:flex-row items-baseline lg:items-center justify-between lg:gap-4 bg-white rounded-lg shadow border">
                         <SheetTrigger
                           onClick={() => setQuestionIndex(index)}
-                          className="p-4"
+                          className="py-2 px-0 lg:px-4 lg:py-4"
                         >
                           <div className="flex items-center justify-between gap-4">
                             {question.user.image ? (
@@ -74,7 +75,7 @@ export default function QAPage() {
                                 <p className="text-gray-700 line-clamp-1 text-sm lg:text-base font-medium">
                                   {question.question}
                                 </p>
-                                <span className="text-xs text-gray-400 whitespace-nowrap">
+                                <span className="hidden lg:block text-xs text-gray-400 whitespace-nowrap">
                                   {question.createdAt.toLocaleDateString()}
                                 </span>
                               </div>
@@ -85,7 +86,7 @@ export default function QAPage() {
                           </div>
                         </SheetTrigger>
 
-                        <div className="mb-4 lg:mb-0 mr-0 lg:mr-4">
+                        <div className="ml-4 lg:ml-0 mb-4 lg:mb-0 mr-0 lg:mr-4">
                           <Button
                             disabled={removeSavedQuestion.isPending}
                             size="sm"
@@ -114,7 +115,7 @@ export default function QAPage() {
                               );
                             }}
                           >
-                            Delete
+                            <Trash2 />
                           </Button>
                         </div>
                       </div>

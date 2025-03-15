@@ -143,7 +143,7 @@ export default function AskQuestionCard() {
         <CardContent>
           <form onSubmit={(e: FormEvent<HTMLFormElement>) => OnSubmit(e)}>
             <Textarea
-              placeholder="Which file should I edit to change the home page?"
+              placeholder="Explain this codebase"
               value={question}
               required
               onChange={(e) => setQuestion(e.target.value.trimStart())}
