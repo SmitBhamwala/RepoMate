@@ -74,7 +74,7 @@ export default function AppSidebar() {
 						quality={100}
 					/>
 					{open && (
-						<h1 className="text-xl font-bold text-primary/80">GitHub AI</h1>
+						<h1 className="text-xl font-bold text-primary/80">RepoMate</h1>
 					)}
 				</Link>
 			</SidebarHeader>
