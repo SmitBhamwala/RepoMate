@@ -11,8 +11,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-	title: "AI-GitHub-Summary",
-	description: "Generate GitHub repo's summary using AI"
+  title: "RepoMate",
+  description:
+    "AI-powered code insights, memory and Q&A for your GitHub repositories in one place",
 };
 
 export const viewport: Viewport = {
