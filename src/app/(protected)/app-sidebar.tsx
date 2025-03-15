@@ -32,7 +32,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
-const items = [
+const navigationItems = [
 	{
 		title: "Dashboard",
 		url: "/dashboard",
@@ -186,7 +186,7 @@ export default function AppSidebar() {
             <SidebarGroupLabel>Application</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {items.map((item) => {
+                {navigationItems.map((item) => {
                   return (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild>
