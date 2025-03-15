@@ -61,7 +61,7 @@ export default function LoginForm() {
 
   return (
     <CardWrapper
-      headerLabel="RepoMate"
+      headerLabel="Welcome back"
       backButtonLabel="Don't have an account?"
       backButtonHref="/auth/register"
       showSocial
