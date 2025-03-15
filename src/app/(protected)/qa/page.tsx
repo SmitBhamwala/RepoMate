@@ -43,10 +43,10 @@ export default function QAPage() {
               ? questions.map((question, index) => {
                   return (
                     <Fragment key={question.id}>
-                      <div className="flex flex-col lg:flex-row items-baseline lg:items-center justify-between lg:gap-4 bg-white rounded-lg shadow border">
+                      <div className="flex flex-row items-center justify-between gap-2 lg:gap-4 bg-white rounded-lg shadow border">
                         <SheetTrigger
                           onClick={() => setQuestionIndex(index)}
-                          className="py-2 px-0 lg:px-4 lg:py-4"
+                          className="py-4 pl-4"
                         >
                           <div className="flex items-center justify-between gap-4">
                             {question.user.image ? (
@@ -70,7 +70,7 @@ export default function QAPage() {
                               </div>
                             )}
 
-                            <div className="text-left flex flex-col w-[60vw]">
+                            <div className="text-left flex flex-col w-[50vw] lg:w-[58vw]">
                               <div className="flex items-center gap-2">
                                 <p className="text-gray-700 line-clamp-1 text-sm lg:text-base font-medium">
                                   {question.question}
@@ -86,7 +86,7 @@ export default function QAPage() {
                           </div>
                         </SheetTrigger>
 
-                        <div className="ml-4 lg:ml-0 mb-4 lg:mb-0 mr-0 lg:mr-4">
+                        <div className="mr-4">
                           <Button
                             disabled={removeSavedQuestion.isPending}
                             size="sm"
