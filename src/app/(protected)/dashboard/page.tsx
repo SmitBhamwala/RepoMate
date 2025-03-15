@@ -37,12 +37,12 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="mt-4">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-5">
+            <div className="grid grid-cols-3 gap-4 md:grid-cols-5">
               <AskQuestionCard />
               <MeetingCard />
             </div>
           </div>
-          <div className="mt-8"></div>
+          <div className="mt-8 mb-3 text-xl font-semibold text-gray-700">Commit Summary:</div>
           {project && <CommitLog />}
         </div>
       ) : (

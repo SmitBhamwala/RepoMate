@@ -84,7 +84,7 @@ export default function MeetingCard() {
   });
 
   return (
-    <Card className="col-span-2 flex flex-col items-center justify-center p-10">
+    <Card className="col-span-3 md:col-span-2 flex flex-col items-center justify-center p-10">
       {!isUploading && (
         <>
           <Presentation className="h-10 w-10 animate-bounce" />

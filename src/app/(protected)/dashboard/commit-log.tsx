@@ -51,7 +51,20 @@ export default function CommitLog() {
 											</span>
 										</Link>
 									</div>
-									<span className="font-semibold">{commit.commitMessage}</span>
+									<div className="flex gap-1 items-center">
+                    <span className="font-semibold">
+                      {commit.commitMessage}
+                    </span>
+                    <span className="hidden md:block font-normal text-xs text-gray-500">
+                      (
+                      {commit.commitDate.getDate() +
+                        "/" +
+                        commit.commitDate.getMonth() +
+                        "/" +
+                        commit.commitDate.getFullYear()}
+                      )
+                    </span>
+                  </div>
 									<pre className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-500">
 										{commit.summary}
 									</pre>

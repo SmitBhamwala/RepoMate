@@ -32,7 +32,7 @@ export default function MeetingsPage() {
         {meetings?.map((meeting) => (
           <li
             key={meeting.id}
-            className="flex items-center justify-between py-5 gap-x-6"
+            className="flex flex-col lg:flex-row lg:items-center justify-between py-5 gap-y-2 lg:gap-y-0 gap-x-6"
           >
             <div>
               <div className="min-w-0">
