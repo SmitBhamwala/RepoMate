@@ -190,7 +190,7 @@ export default function SidebarLayout({
           </div>
           <div className="h-4"></div>
 
-          <div className="w-full border-sidebar-border bg-sidebar border shadow rounded-md overflow-x-hidden overflow-y-scroll h-[calc(100vh-10rem)] lg:h-[calc(100vh-6rem)] p-4">
+          <div className="w-full border-sidebar-border bg-sidebar border shadow rounded-md overflow-x-hidden overflow-y-scroll h-[calc(100vh-10rem)] lg:h-[calc(100dvh-6rem)] p-4">
             {children}
           </div>
 
