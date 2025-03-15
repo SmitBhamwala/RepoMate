@@ -17,17 +17,18 @@ export default function DashboardPage() {
     <>
       {project ? (
         <div>
-          <div className="flex items-center justify-between flex-wrap gap-y-4">
-            <Link
-              href={project?.gitHubURL ?? ""}
-              target="_blank"
-              className="flex items-center gap-1 text-sm font-medium text-white w-fit rounded-md bg-primary px-4 py-3"
-            >
+          <div className="flex items-center justify-end md:justify-between flex-wrap gap-y-4">
+            <div className="hidden md:flex items-center gap-1 text-sm font-medium text-white w-fit rounded-md bg-primary px-4 py-3">
               <Github className="size-5 flex-shrink-0" />
-              <span>{project?.name}&apos;s Source Code</span>
-            </Link>
-
-            <div className="h-4"></div>
+              <span>This project is linked to: </span>
+              <Link
+                href={project?.gitHubURL ?? ""}
+                target="_blank"
+                className="hover:underline"
+              >
+                {project?.gitHubURL.split("//").pop()}
+              </Link>
+            </div>
 
             <div className="flex items-center gap-4">
               <TeamMembers />
