@@ -7,13 +7,14 @@ import { SessionProvider } from "next-auth/react";
 
 const poppins = Poppins({
 	subsets: ["latin"],
-	weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"]
+	weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+	preload: false
 });
 
 export const metadata: Metadata = {
-  title: "RepoMate",
-  description:
-    "AI-powered code insights, memory and Q&A for your GitHub repositories in one place",
+	title: "RepoMate",
+	description:
+		"AI-powered code insights, memory and Q&A for your GitHub repositories in one place"
 };
 
 export const viewport: Viewport = {
