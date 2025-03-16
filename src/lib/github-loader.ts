@@ -17,7 +17,7 @@ export async function loadGitHubRepo(githubUrl: string, gitHubToken?: string) {
 		],
 		recursive: true,
 		unknown: "warn",
-		maxConcurrency: 100
+		maxConcurrency: 50
 	});
 
 	const docs = await loader.load();
