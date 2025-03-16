@@ -7,7 +7,7 @@ import { generateAiTextToVectorEmbedding } from "@/lib/gemini";
 import { db } from "@/lib/db";
 
 const google = createGoogleGenerativeAI({
-	apiKey: process.env.GEMINI_API_KEY_3
+	apiKey: process.env.GEMINI_API_KEY_1!
 });
 
 export async function askQuestion(question: string, projectId: string) {
@@ -94,7 +94,7 @@ export async function askQuestion(question: string, projectId: string) {
 			},
 			{
 				$match: {
-					similarity: { $gt: 0.4 },
+					similarity: { $gt: 0.5 },
 					projectId: { $oid: projectId }
 				}
 			},
@@ -124,6 +124,7 @@ export async function askQuestion(question: string, projectId: string) {
 	};
 
 	const result = rawResult.cursor.firstBatch;
+  // console.log(result);
 
 	let context = "";
 
@@ -133,7 +134,7 @@ export async function askQuestion(question: string, projectId: string) {
 
 	(async () => {
 		const { textStream } = streamText({
-			model: google("gemini-1.5-flash"),
+			model: google("gemini-2.0-flash-001"),
 			prompt: `
       You are an AI code assistant who answers questions about the codebase. Your target audience is a technical intern.
       AI assistant is a brand new, powerful, human-like artificial intelligence.

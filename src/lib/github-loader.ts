@@ -11,11 +11,13 @@ export async function loadGitHubRepo(githubUrl: string, gitHubToken?: string) {
 			"package-lock.json",
 			"yarn.lock",
 			"pnpm-lock.yaml",
-			"bun.lockb"
+			"bun.lockb",
+      "*.lock",
+
 		],
 		recursive: true,
 		unknown: "warn",
-		maxConcurrency: 5
+		maxConcurrency: 100
 	});
 
 	const docs = await loader.load();
@@ -47,43 +49,18 @@ export async function indexGitHubRepo(
 	);
 }
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 async function generateEmbeddings(docs: Document[]) {
-	const results = [];
-
-	for (const doc of docs) {
-		try {
+	return await Promise.all(
+		docs.map(async (doc) => {
 			const summary = await summarizeCode(doc);
 			const embedding = await generateAiTextToVectorEmbedding(summary);
 			console.log(doc.metadata);
-
-			results.push({
+			return {
 				summary,
 				embedding,
 				sourceCode: JSON.parse(JSON.stringify(doc.pageContent)),
 				fileName: doc.metadata.source
-			});
-
-			await sleep(5000);
-		} catch (error) {
-			console.error("Error processing document: ", error);
-		}
-	}
-
-	return results;
-
-	// return await Promise.all(
-	// 	docs.map(async (doc) => {
-	// 		const summary = await summarizeCode(doc);
-	// 		const embedding = await generateAiTextToVectorEmbedding(summary);
-	// 		await sleep(6000);
-	// 		return {
-	// 			summary,
-	// 			embedding,
-	// 			sourceCode: JSON.parse(JSON.stringify(doc.pageContent)),
-	// 			fileName: doc.metadata.source
-	// 		};
-	// 	})
-	// );
+			};
+		})
+	);
 }

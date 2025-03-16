@@ -3,12 +3,12 @@ import { Document } from "@langchain/core/documents";
 
 const commitGenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY_1!);
 const commitSummaryModel = commitGenAI.getGenerativeModel({
-	model: "gemini-1.5-flash"
+	model: "gemini-2.0-flash-001"
 });
 
-const codeSummaryGenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY_2!);
+const codeSummaryGenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY_1!);
 const codeSummaryModel = codeSummaryGenAI.getGenerativeModel({
-	model: "gemini-1.5-flash"
+	model: "gemini-2.0-flash-001"
 });
 
 export async function aiCommitSummarizer(diff: string) {
