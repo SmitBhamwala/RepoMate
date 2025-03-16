@@ -42,12 +42,12 @@ export default function DashboardPage() {
               <MeetingCard />
             </div>
           </div>
-          <div className="mt-8 mb-3 text-xl font-semibold text-gray-700">Commit Summary:</div>
+          <div className="mt-8 mb-3 text-xl font-semibold text-gray-700">Commit Summary</div>
           {project && <CommitLog />}
         </div>
       ) : (
-        <div className="flex items-center justify-center">
-          Please select a project from the sidebar or create a new project
+        <div className="text-sm md:text-lg flex items-center justify-center">
+          Select a project or create a new project
         </div>
       )}
     </>
