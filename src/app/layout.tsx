@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
-import "./globals.css";
+import "@/app/globals.css";
 import { Toaster } from "sonner";
 import { TRPCReactProvider } from "@/trpc/react";
 import { SessionProvider } from "next-auth/react";
