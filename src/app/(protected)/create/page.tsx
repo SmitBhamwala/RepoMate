@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import useProject from "@/hooks/use-project";
 import useRefetch from "@/hooks/use-refetch";
 import { api } from "@/trpc/react";
+import { Info } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -19,33 +20,55 @@ type FormInput = {
 export default function CreatePage() {
 	const { register, handleSubmit, reset } = useForm<FormInput>();
 	const createProject = api.project.createProject.useMutation();
+	const checkCredits = api.project.checkCredits.useMutation();
+
 	const refetch = useRefetch();
 	const router = useRouter();
 	const { setActiveProjectId } = useProject();
 
 	function onSubmit(data: FormInput) {
-		toast.loading("Creating project");
-		createProject.mutate(
-			{
-				name: data.projectName,
-				gitHubURL: data.repoURL,
-				gitHubToken: data.githubToken
-			},
-			{
-				onSuccess: (project) => {
-					toast.dismiss();
-					toast.success("Project created successfully", { duration: 3000 });
-					refetch();
-					reset();
-					setActiveProjectId(project.id);
-					router.push("/dashboard");
+		if (!!checkCredits.data) {
+			toast.loading("Creating project");
+			createProject.mutate(
+				{
+					name: data.projectName,
+					gitHubURL: data.repoURL,
+					gitHubToken: data.githubToken
 				},
-				onError: () => {
-					toast.dismiss();
-					toast.error("Error creating project", { duration: 3000 });
+				{
+					onSuccess: (project) => {
+						toast.dismiss();
+						toast.success("Project created successfully", { duration: 3000 });
+						refetch();
+						reset();
+						checkCredits.reset();
+						setActiveProjectId(project.id);
+						router.push("/dashboard");
+					},
+					onError: () => {
+						toast.dismiss();
+						toast.error("Error creating project", { duration: 3000 });
+					}
 				}
-			}
-		);
+			);
+		} else {
+			toast.loading("Checking credits");
+			checkCredits.mutate(
+				{
+					gitHubUrl: data.repoURL,
+					gitHubToken: data.githubToken
+				},
+				{
+					onSuccess: () => {
+						toast.dismiss();
+					},
+					onError: () => {
+						toast.dismiss();
+						toast.error("Error checking credits", { duration: 3000 });
+					}
+				}
+			);
+		}
 		return true;
 	}
 
@@ -88,9 +111,29 @@ export default function CreatePage() {
 							{...register("githubToken")}
 							placeholder="GitHub Token (Optional)"
 						/>
+						{!!checkCredits.data && (
+							<>
+								<div className="mt-4 bg-orange-50 px-4 py-2 rounded-md border border-orange-200 text-orange-700">
+									<div className="flex items-center gap-2">
+										<Info className="size-4" />
+										<p className="text-sm">
+											You will be charged{" "}
+											<strong>{checkCredits.data.fileCount}</strong> credits for
+											this repository
+										</p>
+									</div>
+									<p className="text-sm text-blue-600 ml-6">
+										You have <strong>{checkCredits.data.userCredits}</strong>{" "}
+										credits remaining.
+									</p>
+								</div>
+							</>
+						)}
 						<div className="h-4"></div>
-						<Button type="submit" disabled={createProject.isPending}>
-							Create Project
+						<Button
+							type="submit"
+							disabled={createProject.isPending || checkCredits.isPending}>
+							{!!checkCredits.data ? "Create Project" : "Check Credits"}
 						</Button>
 					</form>
 				</div>
