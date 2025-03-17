@@ -198,7 +198,13 @@ export const projectRouter = createTRPCRouter({
         },
       });
     }),
-    checkCredits: protectedProcedure
+  getCredits: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.user.findUnique({
+      where: { id: ctx.user.user.id },
+      select: { credits: true }
+    });
+  }),
+  checkCredits: protectedProcedure
 		.input(
 			z.object({ gitHubUrl: z.string(), gitHubToken: z.string().optional() })
 		)
