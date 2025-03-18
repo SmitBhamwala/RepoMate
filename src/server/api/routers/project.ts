@@ -3,6 +3,24 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { pollCommits } from "@/lib/github";
 import { checkCredits, indexGitHubRepo } from "@/lib/github-loader";
+import { TRPCError } from "@trpc/server";
+
+const TIMEOUT_MS = 5000; // 5 seconds
+
+async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+	return Promise.race([
+		promise,
+		new Promise<never>((_, reject) =>
+			setTimeout(
+				() =>
+					reject(
+						new TRPCError({ code: "TIMEOUT", message: "Request timed out" })
+					),
+				ms
+			)
+		)
+	]);
+}
 
 export const projectRouter = createTRPCRouter({
   createProject: protectedProcedure
@@ -209,11 +227,24 @@ export const projectRouter = createTRPCRouter({
 			z.object({ gitHubUrl: z.string(), gitHubToken: z.string().optional() })
 		)
 		.mutation(async ({ ctx, input }) => {
-			const fileCount = await checkCredits(input.gitHubUrl, input.gitHubToken);
-			const userCredits = await ctx.db.user.findUnique({
-				where: { id: ctx.user.user.id },
-				select: { credits: true }
-			});
-			return { fileCount, userCredits: userCredits?.credits || 0 };
+      try {
+				const fileCount = await withTimeout(
+					checkCredits(input.gitHubUrl, input.gitHubToken),
+					TIMEOUT_MS
+				);
+				const userCredits = await ctx.db.user.findUnique({
+					where: { id: ctx.user.user.id },
+					select: { credits: true }
+				});
+				return { fileCount, userCredits: userCredits?.credits || 0 };
+			} catch (error: unknown) {
+				throw new TRPCError({
+					code:
+						error instanceof TRPCError ? error.code : "INTERNAL_SERVER_ERROR",
+					message:
+						error instanceof Error ? error.message : "Internal server error",
+					cause: error
+				});
+			}
 		})
 });
