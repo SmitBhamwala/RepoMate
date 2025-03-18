@@ -167,8 +167,8 @@ export default function QAPage() {
 					</Sheet>
 				</>
 			) : (
-				<div className="flex items-center justify-center">
-					Please select a project or create a new project
+				<div className="text-sm md:text-lg flex items-center justify-center">
+					Select a project or create a new project
 				</div>
 			)}
 		</div>

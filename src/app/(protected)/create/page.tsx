@@ -62,9 +62,9 @@ export default function CreatePage() {
 					onSuccess: () => {
 						toast.dismiss();
 					},
-					onError: () => {
+					onError: (error) => {
 						toast.dismiss();
-						toast.error("Error checking credits", { duration: 3000 });
+						toast.error(error.message, { duration: 3000 });
 					}
 				}
 			);
@@ -82,7 +82,7 @@ export default function CreatePage() {
 				height={100}
 				quality={100}
 			/>
-			<div className="w-full lg:w-[25rem]">
+			<div className="w-full md:w-[25rem]">
 				<div>
 					<h1 className="font-semibold text-xl md:text-2xl">
 						Link your GitHub Repository
