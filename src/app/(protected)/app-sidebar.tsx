@@ -1,8 +1,19 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList
+} from "@/components/ui/command";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger
+} from "@/components/ui/popover";
 import {
 	Sidebar,
 	SidebarContent,
@@ -24,6 +35,7 @@ import {
 	ChevronsUpDown,
 	// CreditCard,
 	LayoutDashboard,
+	Loader,
 	Plus,
 	Presentation
 } from "lucide-react";
@@ -47,7 +59,7 @@ const navigationItems = [
 		title: "Meetings",
 		url: "/meetings",
 		icon: Presentation
-	},
+	}
 	// {
 	// 	title: "Billing",
 	// 	url: "/billing",
@@ -79,135 +91,127 @@ export default function AppSidebar() {
 				</Link>
 			</SidebarHeader>
 			<SidebarContent>
-			{projects && projects.length > 0 && (
-          <>
-            <SidebarGroup>
-              <SidebarGroupLabel>Current Project</SidebarGroupLabel>
-              <Popover
-                open={projectDropdownOpen}
-                onOpenChange={setProjectDropdownOpen}
-              >
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className={cn(
-                      "w-full",
-                      open ? "justify-between" : "justify-center"
-                    )}
-                  >
-                    {open && projects && activeProjectId
-                      ? projects.find(
-                          (project) => project.id === activeProjectId
-                        )?.name
-                      : open && "Select Project"}
-                    <ChevronsUpDown
-                      className={cn(
-                        "h-4 w-4 shrink-0 opacity-50",
-                        open && "ml-2"
-                      )}
-                    />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
-                  <Command>
-                    <CommandInput placeholder="Search project" />
-                    <CommandList>
-                      <CommandEmpty>No projects found!</CommandEmpty>
-                      <CommandGroup>
-                        {projects?.map((project) => (
-                          <CommandItem
-                            key={project.id}
-                            value={project.id}
-                            className={cn(
-                              "cursor-pointer shadow-none",
-                              activeProjectId === project.id &&
-                                "bg-primary/10 hover:bg-primary/10"
-                            )}
-                            onSelect={(currentValue) => {
-                              setActiveProjectId(currentValue);
-                              router.push("/dashboard");
-                              setProjectDropdownOpen(false);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                activeProjectId === project.id
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                            <div
-                              className={cn(
-                                "rounded-sm border size-6 flex items-center justify-center text-sm bg-white text-primary",
-                                {
-                                  "bg-primary text-white":
-                                    project.id === activeProjectId,
-                                }
-                              )}
-                            >
-                              {project.name[0]}
-                            </div>
-                            <span>{project.name}</span>
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-            </SidebarGroup>
+				<SidebarGroup>
+					<SidebarGroupLabel>Current Project</SidebarGroupLabel>
+					<Popover
+						open={projectDropdownOpen}
+						onOpenChange={setProjectDropdownOpen}>
+						<PopoverTrigger asChild>
+							<Button
+								variant="outline"
+								role="combobox"
+								aria-expanded={open}
+								className={cn(
+									"w-full",
+									open ? "justify-between" : "justify-center"
+								)}>
+								{open && !projects ? (
+									<Loader className="text-primary animate-spin" />
+								) : open &&
+								  projects &&
+								  projects.some((project) => project.id === activeProjectId) ? (
+									projects.find((project) => project.id === activeProjectId)
+										?.name
+								) : (
+									open && "Select Project"
+								)}
+								<ChevronsUpDown
+									className={cn("h-4 w-4 shrink-0 opacity-50", open && "ml-2")}
+								/>
+							</Button>
+						</PopoverTrigger>
+						<PopoverContent className="w-full p-0">
+							<Command>
+								<CommandInput placeholder="Search project" />
+								<CommandList>
+									<CommandEmpty>No projects found!</CommandEmpty>
+									<CommandGroup>
+										{projects?.map((project) => (
+											<CommandItem
+												key={project.id}
+												value={project.id}
+												className={cn(
+													"cursor-pointer shadow-none",
+													activeProjectId === project.id &&
+														"bg-primary/10 hover:bg-primary/10"
+												)}
+												onSelect={(currentValue) => {
+													setActiveProjectId(currentValue);
+													router.push("/dashboard");
+													setProjectDropdownOpen(false);
+												}}>
+												<Check
+													className={cn(
+														"mr-2 h-4 w-4",
+														activeProjectId === project.id
+															? "opacity-100"
+															: "opacity-0"
+													)}
+												/>
+												<div
+													className={cn(
+														"rounded-sm border size-6 flex items-center justify-center text-sm bg-white text-primary",
+														{
+															"bg-primary text-white":
+																project.id === activeProjectId
+														}
+													)}>
+													{project.name[0]}
+												</div>
+												<span>{project.name}</span>
+											</CommandItem>
+										))}
+									</CommandGroup>
+								</CommandList>
+							</Command>
+						</PopoverContent>
+					</Popover>
+				</SidebarGroup>
 
-            <div className="flex w-full justify-center items-center">OR</div>
-          </>
-        )}
+				<div className="flex w-full justify-center items-center">OR</div>
 
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <Link href="/create">
-                  <Button size="sm" variant="outline" className="w-full">
-                    <Plus />
-                    {open && "Create New Project"}
-                  </Button>
-                </Link>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+				<SidebarGroup>
+					<SidebarGroupContent>
+						<SidebarMenu>
+							<SidebarMenuItem>
+								<Link href="/create">
+									<Button size="sm" variant="outline" className="w-full">
+										<Plus />
+										{open && "Create New Project"}
+									</Button>
+								</Link>
+							</SidebarMenuItem>
+						</SidebarMenu>
+					</SidebarGroupContent>
+				</SidebarGroup>
 
 				<SidebarSeparator />
 
 				{projects && projects.length > 0 && activeProjectId && (
-          <SidebarGroup>
-            <SidebarGroupLabel>Application</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {navigationItems.map((item) => {
-                  return (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild>
-                        <Link
-                          href={item.url}
-                          className={cn({
-                            "!bg-primary !text-white": pathname === item.url,
-                          })}
-                        >
-                          <item.icon />
-                          {open && <span>{item.title}</span>}
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  );
-                })}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
-
+					<SidebarGroup>
+						<SidebarGroupLabel>Application</SidebarGroupLabel>
+						<SidebarGroupContent>
+							<SidebarMenu>
+								{navigationItems.map((item) => {
+									return (
+										<SidebarMenuItem key={item.title}>
+											<SidebarMenuButton asChild>
+												<Link
+													href={item.url}
+													className={cn({
+														"!bg-primary !text-white": pathname === item.url
+													})}>
+													<item.icon />
+													{open && <span>{item.title}</span>}
+												</Link>
+											</SidebarMenuButton>
+										</SidebarMenuItem>
+									);
+								})}
+							</SidebarMenu>
+						</SidebarGroupContent>
+					</SidebarGroup>
+				)}
 			</SidebarContent>
 		</Sidebar>
 	);

@@ -25,6 +25,7 @@ import {
   Check,
   ChevronsUpDown,
   LayoutDashboard,
+  Loader,
   Plus,
   Presentation,
 } from "lucide-react";
@@ -105,11 +106,16 @@ export default function SidebarLayout({
                   className="w-full max-w-[50vw] gap-2 justify-between"
                 >
                   <div className="flex items-center overflow-hidden truncate">
-                    {projects && activeProjectId
-                      ? projects.find(
-                          (project) => project.id === activeProjectId
-                        )?.name
-                      : "Select Project"}
+                    {!projects ? (
+											<Loader className="text-primary animate-spin" />
+										) : projects.some(
+												(project) => project.id === activeProjectId
+										  ) ? (
+											projects.find((project) => project.id === activeProjectId)
+												?.name
+										) : (
+											"Select Project"
+										)}
                   </div>
                   <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -178,7 +184,6 @@ export default function SidebarLayout({
                     className="w-full"
                     type="submit"
                     onClick={() => {
-                      setActiveProjectId("");
                       signOut();
                     }}
                   >
