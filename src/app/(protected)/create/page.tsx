@@ -73,18 +73,18 @@ export default function CreatePage() {
 	}
 
 	return (
-		<div className="flex flex-col lg:flex-row items-center justify-center gap-12 h-full">
+		<div className="flex flex-col lg:flex-row items-center justify-start md:justify-center gap-6 md:gap-12 h-full">
 			<Image
 				src="/undraw_developer-activity_blue.svg"
-				className="h-56 w-auto"
+				className="h-44 md:h-64 w-auto"
 				alt=""
 				width={100}
 				height={100}
 				quality={100}
 			/>
-			<div>
+			<div className="w-full lg:w-[25rem]">
 				<div>
-					<h1 className="font-semibold text-2xl">
+					<h1 className="font-semibold text-xl md:text-2xl">
 						Link your GitHub Repository
 					</h1>
 					<p className="text-sm text-muted-foreground">
@@ -104,6 +104,9 @@ export default function CreatePage() {
 							{...register("repoURL", { required: true })}
 							placeholder="GitHub URL"
 							type="url"
+							onChange={() => {
+								checkCredits.reset();
+							}}
 							required
 						/>
 						<div className="h-2"></div>
