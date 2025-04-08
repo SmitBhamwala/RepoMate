@@ -1,24 +1,18 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import {
-	getDownloadURL,
-	getStorage,
-	ref,
-	uploadBytesResumable
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable
 } from "firebase/storage";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
 	apiKey: process.env.FIREBASE_API_KEY,
-	authDomain: "understandyourcodeai.firebaseapp.com",
-	projectId: "understandyourcodeai",
-	storageBucket: "understandyourcodeai.firebasestorage.app",
-	messagingSenderId: "348442438541",
-	appId: "1:348442438541:web:3567663778020389fd6bc4",
-	measurementId: "G-PDHXKSDKSX"
+  authDomain: "fir-4bb42.firebaseapp.com",
+  projectId: "fir-4bb42",
+  storageBucket: "fir-4bb42.firebasestorage.app",
+  messagingSenderId: "654119151897",
+  appId: "1:654119151897:web:d0ce6f04bf96321b80fd88"
 };
 
 // Initialize Firebase
